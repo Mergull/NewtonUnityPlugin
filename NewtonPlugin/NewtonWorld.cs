@@ -67,6 +67,7 @@ public class NewtonWorld : MonoBehaviour
         m_world.SetFrameRate(m_updateRate);
         m_world.SetThreadsCount(m_numberOfThreads);
         m_world.SetSolverIterations(m_solverIterationsCount);
+        m_world.SetMaxIterations(m_maxIterations);
         m_world.SetBroadPhase(m_broadPhaseType);
         m_world.SetGravity(m_gravity.x, m_gravity.y, m_gravity.z);
         m_world.SetSubSteps(m_subSteps);
@@ -289,6 +290,7 @@ public class NewtonWorld : MonoBehaviour
     public int m_updateRate = 60;
     public int m_subSteps = 2;
     public int m_pluginsOptions = 0;
+    public int m_maxIterations = 7;
 
     public Vector3 m_gravity = new Vector3(0.0f, -9.8f, 0.0f);
 

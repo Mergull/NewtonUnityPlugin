@@ -231,6 +231,11 @@ void dNewtonWorld::SetSolverIterations(int mode)
 	NewtonSetSolverIterations(m_world, dClamp (mode, 1, 1000));
 }
 
+void dNewtonWorld::SetMaxIterations(int count)
+{
+	m_maxInterations = dClamp(count, 1, 100);
+}
+
 void dNewtonWorld::SetThreadsCount(int threads)
 {
 	NewtonSetThreadsCount(m_world, dClamp (threads, 0, 8));
@@ -400,11 +405,10 @@ void dNewtonWorld::OnContactCollision(const NewtonJoint* contactJoint, dFloat ti
 
 void dNewtonWorld::Update(dFloat timestepInSeconds)
 {
-	const int maxInterations = 1;
-	dLong timestepMicroSeconds = dClamp((dLong)(double(timestepInSeconds) * 1000000.0f), dLong(0), m_timeStepInMicroSeconds);
-	m_realTimeInMicroSeconds += timestepMicroSeconds * maxInterations;
+	dLong timestepMicroSeconds = dClamp((dLong)(double(timestepInSeconds) * 1000000.0f), dLong(0), m_timeStepInMicroSeconds * m_maxInterations);
+	m_realTimeInMicroSeconds += timestepMicroSeconds;
 
-	for (int doUpate = maxInterations; m_realTimeInMicroSeconds >= m_timeStepInMicroSeconds; doUpate--) {
+	for (int doUpate = m_maxInterations; m_realTimeInMicroSeconds >= m_timeStepInMicroSeconds; doUpate--) {
 		if (doUpate) {
 			//UpdateWorld(forceCallback);
 			UpdateWorld();

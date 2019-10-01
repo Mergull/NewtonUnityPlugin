@@ -83,6 +83,7 @@ class dNewtonWorld: public dAlloc
 	void Update(dFloat timestepInSeconds);
 
 	void SetSolverIterations(int mode);
+	void SetMaxIterations(int mode);
 	void SetFrameRate(dFloat frameRate);
 	const dVector& GetGravity() const;
 	void SetGravity(const dVector& gravity);
@@ -140,6 +141,7 @@ class dNewtonWorld: public dAlloc
 	dTree<dMaterialProperties, long long> m_materialGraph;
 	dLong m_realTimeInMicroSeconds;
 	dLong m_timeStepInMicroSeconds;
+	int m_maxInterations;
 	
 	dFloat m_timeStep;
 	dFloat m_interpotationParam;

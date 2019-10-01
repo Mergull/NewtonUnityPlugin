@@ -57,6 +57,7 @@ public class NewtonWorldEditor : Editor
         m_numThreadsProp = serializedObject.FindProperty("m_numberOfThreads");
         m_broadPhaseTypeProp = serializedObject.FindProperty("m_broadPhaseType");
         m_solverIterationsCountProp = serializedObject.FindProperty("m_solverIterationsCount");
+        m_solverMaxIterationsCountProp = serializedObject.FindProperty("m_maxIterations");
         m_useParallerSolverProp = serializedObject.FindProperty("m_useParallerSolver");
         m_pluginsOptionsProp = serializedObject.FindProperty("m_pluginsOptions");
 
@@ -80,6 +81,7 @@ public class NewtonWorldEditor : Editor
 
         EditorGUILayout.IntPopup(m_numThreadsProp, m_numberOfThreadsOptions, m_numberOfThreadsValues, new GUIContent("Worker threads"));
         EditorGUILayout.IntSlider(m_solverIterationsCountProp, 1, 10, new GUIContent("Solver iterations count"));
+        EditorGUILayout.IntSlider(m_solverMaxIterationsCountProp, 1, 20, new GUIContent("Max solver iterations count"));
         EditorGUILayout.IntSlider(m_updateRateProp, 60, 1000, new GUIContent("Update rate"));
         EditorGUILayout.IntSlider(m_subStepsProp, 1, 4, new GUIContent("Number of update sub steps"));
         EditorGUILayout.IntPopup(m_broadPhaseTypeProp, m_broadPhaseOptions, m_broadPhaseValues, new GUIContent("Broad phase type"));
@@ -103,6 +105,7 @@ public class NewtonWorldEditor : Editor
     SerializedProperty m_useParallerSolverProp;
     SerializedProperty m_serializeSceneOnceProp;
     SerializedProperty m_solverIterationsCountProp;
+    SerializedProperty m_solverMaxIterationsCountProp;
 
 
     SerializedProperty m_pluginsOptionsProp;
