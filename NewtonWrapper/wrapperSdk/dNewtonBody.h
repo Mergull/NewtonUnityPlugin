@@ -76,6 +76,9 @@ class dNewtonBody: public dAlloc
 	bool GetSleepState() const;
 	void SetSleepState(bool state) const;
 
+	bool GetContinuousCollisionMode() const;
+	void SetContinuousCollisionMode(bool mode) const;
+
 	protected:
 	virtual ~dNewtonBody();
 
