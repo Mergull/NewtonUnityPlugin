@@ -76,7 +76,7 @@ void dNewtonBody::SetSleepState(bool state) const
 
 bool dNewtonBody::GetContinuousCollisionMode() const
 {
-	return NewtonBodyGetContinuousCollisionMode(m_body);
+	return NewtonBodyGetContinuousCollisionMode(m_body) ? true : false;
 }
 
 void dNewtonBody::SetContinuousCollisionMode(bool mode) const
