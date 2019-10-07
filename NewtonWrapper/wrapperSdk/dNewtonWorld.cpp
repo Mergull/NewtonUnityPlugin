@@ -362,13 +362,14 @@ int dNewtonWorld::OnBodiesAABBOverlap(const NewtonJoint* const contactJoint, dFl
 	NewtonBody* const bodyPtr0 = NewtonJointGetBody0(contactJoint);
 	NewtonBody* const bodyPtr1 = NewtonJointGetBody1(contactJoint);
 	//dNewtonWorld* const world = (dNewtonWorld*)NewtonMaterialGetMaterialPairUserData(material);
+	dNewtonWorld* const world = (dNewtonWorld*)NewtonWorldGetUserData(NewtonBodyGetWorld(bodyPtr0));
 	NewtonCollision* const newtonCollision0 = (NewtonCollision*)NewtonBodyGetCollision(bodyPtr0);
 	NewtonCollision* const newtonCollision1 = (NewtonCollision*)NewtonBodyGetCollision(bodyPtr1);
 	dNewtonCollision* const collision0 = (dNewtonCollision*)NewtonCollisionGetUserData(newtonCollision0);
 	dNewtonCollision* const collision1 = (dNewtonCollision*)NewtonCollisionGetUserData(newtonCollision1);
-	//const dMaterialProperties materialProp = world->FindMaterial(collision0->m_materialID, collision1->m_materialID);
-	//return materialProp.m_collisionEnable ? 1 : 0;
-	return 1;
+	const dMaterialProperties materialProp = world->FindMaterial(collision0->m_materialID, collision1->m_materialID);
+	return materialProp.m_collisionEnable ? 1 : 0;
+	//return 1;
 }
 
 void dNewtonWorld::OnContactCollision(const NewtonJoint* contactJoint, dFloat timestep, int threadIndex)
@@ -479,4 +480,5 @@ void dNewtonWorld::UpdateWorld()
 		NewtonUpdate(m_world, m_timeStep);
 	}
 }
+
 
