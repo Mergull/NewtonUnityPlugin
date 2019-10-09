@@ -30,6 +30,10 @@ class dNewtonBody;
 class dNewtonWorld;
 class dNewtonCollision;
 
+
+typedef void(*OnContactCallback)(dFloat normalImpact);
+//typedef void(*OnWorldUpdateCallback)(dFloat timestep);
+
 class dNewtonBody: public dAlloc
 {
 	public:
@@ -42,6 +46,7 @@ class dNewtonBody: public dAlloc
 		unsigned* m_atomicLock;
 	};
 
+	dNewtonBody();
 	dNewtonBody(const dMatrix& matrix);
 	virtual void Destroy();
 
@@ -79,6 +84,8 @@ class dNewtonBody: public dAlloc
 	bool GetContinuousCollisionMode() const;
 	void SetContinuousCollisionMode(bool mode) const;
 
+	void SetCallbacks(OnContactCallback onContactCallback);
+
 	protected:
 	virtual ~dNewtonBody();
 
@@ -108,6 +115,8 @@ class dNewtonBody: public dAlloc
 	dVector m_com;
 	dVector m_angulardamping;
 	unsigned m_lock;
+
+	OnContactCallback m_onContactCallback;
 
 	friend class dNewtonWorld;
 	friend class dNewtonBallAndSocket;

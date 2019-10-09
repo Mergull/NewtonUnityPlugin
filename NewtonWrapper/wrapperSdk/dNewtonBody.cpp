@@ -38,6 +38,20 @@ dNewtonBody::ScopeLock::~ScopeLock()
 	NewtonAtomicSwap((int*)m_atomicLock, 0);
 }
 
+dNewtonBody::dNewtonBody() 
+	:dAlloc()
+	, m_body(NULL)
+	, m_posit0(dVector(0, 0, 0))
+	, m_posit1(dVector(0, 0, 0))
+	, m_interpolatedPosit(dVector(0, 0, 0))
+	, m_rotation0(dMatrix())
+	, m_rotation1(m_rotation0)
+	, m_interpolatedRotation(m_rotation0)
+	, m_lock(0)
+	, m_onContactCallback(NULL)
+{
+
+}
 
 dNewtonBody::dNewtonBody(const dMatrix& matrix)
 	:dAlloc()
@@ -49,6 +63,7 @@ dNewtonBody::dNewtonBody(const dMatrix& matrix)
 	,m_rotation1(m_rotation0)
 	,m_interpolatedRotation(m_rotation0)
 	,m_lock(0)
+	,m_onContactCallback(NULL)
 {
 }
 
@@ -57,6 +72,10 @@ dNewtonBody::~dNewtonBody()
 	Destroy();
 }
 
+void dNewtonBody::SetCallbacks(OnContactCallback onContactCallback)
+{
+	m_onContactCallback = onContactCallback;
+}
 
 void* dNewtonBody::GetBody() const
 {
@@ -415,5 +434,3 @@ void dNewtonDynamicBody::AddTorque(dFloat x, dFloat y, dFloat z)
 {
 	m_externalTorque += dVector(x, y, z);
 }
-
-

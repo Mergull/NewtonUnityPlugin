@@ -375,9 +375,9 @@ int dNewtonWorld::OnBodiesAABBOverlap(const NewtonJoint* const contactJoint, dFl
 void dNewtonWorld::OnContactCollision(const NewtonJoint* contactJoint, dFloat timestep, int threadIndex)
 {
 	NewtonBody* const body0 = NewtonJointGetBody0(contactJoint);
-//	NewtonBody* const body1 = NewtonJointGetBody1(contactJoint);
-//	dNewtonBody* const dbody0 = (dNewtonBody*)NewtonBodyGetUserData(body0);
-//	dNewtonBody* const dbody1 = (dNewtonBody*)NewtonBodyGetUserData(body1);
+	NewtonBody* const body1 = NewtonJointGetBody1(contactJoint);
+	dNewtonBody* const dbody0 = (dNewtonBody*)NewtonBodyGetUserData(body0);
+	dNewtonBody* const dbody1 = (dNewtonBody*)NewtonBodyGetUserData(body1);
 //	dbody0->m_onCollision(dbody1);
 //	dbody1->m_onCollision(dbody0);
 
@@ -386,6 +386,11 @@ void dNewtonWorld::OnContactCollision(const NewtonJoint* contactJoint, dFloat ti
 	const dMaterialProperties* lastMaterialProp = NULL;
 	for (void* contact = NewtonContactJointGetFirstContact(contactJoint); contact; contact = NewtonContactJointGetNextContact(contactJoint, contact)) {
 		NewtonMaterial* const material = NewtonContactGetMaterial(contact);
+
+		float normalImpact = NewtonMaterialGetContactNormalSpeed(material);
+		//if(dbody0 && dbody0->m_onContactCallback)dbody0->m_onContactCallback(normalImpact);
+		if(dbody0->m_onContactCallback)dbody0->m_onContactCallback(normalImpact);
+		if(dbody1->m_onContactCallback)dbody1->m_onContactCallback(normalImpact);
 
 		NewtonCollision* const newtonCollision0 = (NewtonCollision*)NewtonContactGetCollision0(contact);
 		NewtonCollision* const newtonCollision1 = (NewtonCollision*)NewtonContactGetCollision1(contact);

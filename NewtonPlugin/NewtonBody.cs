@@ -23,18 +23,24 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
+public delegate void OnContactCallback(float normalImpact);
 
 [DisallowMultipleComponent]
 [AddComponentMenu("Newton Physics/Rigid Body")]
-public class NewtonBody: MonoBehaviour
+public class NewtonBody : MonoBehaviour
 {
     void Start()
     {
+        //m_onContactCallback = new OnContactCallback(OnContact);
+
         var scripts = GetComponents<NewtonBodyScript>();
-        foreach(var script in scripts)
+        foreach (var script in scripts)
         {
             m_scripts.Add(script);
+            //script.m_onContactCallback = script.OnContact;
         }
+
+        //if(m_body != null)m_body.SetCallbacks(m_onContactCallback);
 
         InitRigidBody();
     }
@@ -85,6 +91,8 @@ public class NewtonBody: MonoBehaviour
         if (initialized)
             return;
 
+        m_onContactCallback = new OnContactCallback(OnContact);
+
         CreateBodyAndCollision();
 
         SetCenterOfMass();
@@ -94,9 +102,33 @@ public class NewtonBody: MonoBehaviour
 
         var handle = GCHandle.Alloc(this);
         m_body.SetUserData(GCHandle.ToIntPtr(handle));
+        m_body.SetCallbacks(m_onContactCallback);
 
         m_world.RegisterBody(this);
         initialized = true;
+    }
+
+    private void OnContact(float normalImpact)
+    {
+       // Debug.Log(m_scripts);
+        foreach (NewtonBodyScript script in m_scripts)
+        {
+            //Debug.Log("asd");
+            if (script.m_contactNotification)
+            {
+                //Debug.Log("asda");
+                script.OnContact(this, normalImpact);
+                /*for (IntPtr ct = m_world.GetFirstContact(contact); ct != IntPtr.Zero; ct = m_world.GetNextContact(contact, ct))
+                {
+                    //var normImpact = dNewtonContact.GetContactNormalImpact(ct);]
+                    IntPtr info = dNewtonContact.GetContactInfo(bodyPhysics.GetBody().GetBody(), ct);
+                    float[] normImpact = new float[22];
+                    Marshal.Copy(info, normImpact, 0, 22);
+                    script.OnContact(otherBody, normImpact[18]);
+                }*/
+            }
+        }
+        //m_onWorldCallback = new OnWorldUpdateCallback(OnWorldUpdate);
     }
 
     void SetCenterOfMass ()
@@ -373,6 +405,8 @@ public class NewtonBody: MonoBehaviour
     private float[] m_rotationPtr = new float[4];
     private float[] m_vec3Ptr = new float[3];
     private float[] m_comPtr = new float[3];
+
+    private OnContactCallback m_onContactCallback;
 
     internal List<NewtonBodyScript> m_scripts = new List<NewtonBodyScript>();
     private bool initialized = false;

@@ -101,6 +101,7 @@
 %cs_callback(OnDrawFaceCallback, OnDrawFaceCallback) 
 %cs_callback(OnWorldUpdateCallback, OnWorldUpdateCallback) 
 %cs_callback(OnWorldBodyTransfromUpdateCallback, OnWorldBodyTransfromUpdateCallback)
+%cs_callback(OnContactCallback, OnContactCallback)
 
 #pragma SWIG nowarn=401
 #pragma SWIG nowarn=516

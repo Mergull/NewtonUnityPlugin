@@ -29,6 +29,7 @@ void* dNewtonContact::GetContactInfo(void* const body, void* const contact)
 	NewtonMaterialGetContactForce(mat, bd, &cInfo.force[0]);
 	NewtonMaterialGetContactPositionAndNormal(mat, bd, &cInfo.position[0], &cInfo.normal[0]);
 	cInfo.normalSpeed = NewtonMaterialGetContactNormalSpeed(mat);
+	cInfo.maxNormalImpact = NewtonMaterialGetContactMaxNormalImpact(mat);
 
 	return &cInfo;
 }
