@@ -110,25 +110,13 @@ public class NewtonBody : MonoBehaviour
 
     private void OnContact(float normalImpact)
     {
-       // Debug.Log(m_scripts);
         foreach (NewtonBodyScript script in m_scripts)
         {
-            //Debug.Log("asd");
             if (script.m_contactNotification)
             {
-                //Debug.Log("asda");
                 script.OnContact(this, normalImpact);
-                /*for (IntPtr ct = m_world.GetFirstContact(contact); ct != IntPtr.Zero; ct = m_world.GetNextContact(contact, ct))
-                {
-                    //var normImpact = dNewtonContact.GetContactNormalImpact(ct);]
-                    IntPtr info = dNewtonContact.GetContactInfo(bodyPhysics.GetBody().GetBody(), ct);
-                    float[] normImpact = new float[22];
-                    Marshal.Copy(info, normImpact, 0, 22);
-                    script.OnContact(otherBody, normImpact[18]);
-                }*/
             }
         }
-        //m_onWorldCallback = new OnWorldUpdateCallback(OnWorldUpdate);
     }
 
     void SetCenterOfMass ()

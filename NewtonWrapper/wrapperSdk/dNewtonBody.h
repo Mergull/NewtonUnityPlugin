@@ -32,7 +32,6 @@ class dNewtonCollision;
 
 
 typedef void(*OnContactCallback)(dFloat normalImpact);
-//typedef void(*OnWorldUpdateCallback)(dFloat timestep);
 
 class dNewtonBody: public dAlloc
 {
