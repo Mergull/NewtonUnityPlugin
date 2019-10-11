@@ -25,13 +25,14 @@
 #include "dAlloc.h"
 
 class dMatrix;
+class dVector3;
 class NewtonBody;
 class dNewtonBody;
 class dNewtonWorld;
 class dNewtonCollision;
 
 
-typedef void(*OnContactCallback)(dFloat normalImpact);
+typedef void(*OnContactCallback)(void* otherBody, float normal[], dFloat normalImpact, dFloat penetration);
 
 class dNewtonBody: public dAlloc
 {

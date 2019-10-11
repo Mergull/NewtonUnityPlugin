@@ -23,7 +23,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
-public delegate void OnContactCallback(float normalImpact);
+public delegate void OnContactCallback(IntPtr otherBody, IntPtr normal, float normalImpact, float penetration);
 
 [DisallowMultipleComponent]
 [AddComponentMenu("Newton Physics/Rigid Body")]
@@ -108,13 +108,18 @@ public class NewtonBody : MonoBehaviour
         initialized = true;
     }
 
-    private void OnContact(float normalImpact)
+    private void OnContact(IntPtr otherBody, IntPtr normal, float normalImpact, float penetration)
     {
         foreach (NewtonBodyScript script in m_scripts)
         {
             if (script.m_contactNotification)
             {
-                script.OnContact(this, normalImpact);
+                float[] floats = new float[3];
+                Marshal.Copy(normal, floats, 0, 3);
+                Vector3 n = new Vector3(floats[0], floats[1], floats[2]);
+                //dNewtonBody b = (dNewtonBody)Marshal.PtrToStructure(otherBody, typeof(dNewtonBody));
+                var handle = GCHandle.FromIntPtr(otherBody);
+                script.OnContact((NewtonBody)handle.Target, normalImpact, n, penetration);
             }
         }
     }

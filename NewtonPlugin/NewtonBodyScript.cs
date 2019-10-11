@@ -34,7 +34,7 @@ public class NewtonBodyScript : MonoBehaviour
         //Debug.Log("do nothing");
     }
 
-    public virtual void OnContact(NewtonBody otherBody, float normalImpact)
+    public virtual void OnContact(NewtonBody otherBody, float normalImpact, Vector3 normal, float penetration)
     {
         // do nothing
         //Debug.Log("do nothing");

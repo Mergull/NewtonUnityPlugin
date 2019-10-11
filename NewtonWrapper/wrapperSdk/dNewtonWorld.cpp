@@ -149,7 +149,13 @@ void* dNewtonWorld::Raycast(float p0x, float p0y, float p0z, float p1x, float p1
 	{
 		return nullptr;
 	}
+}
 
+void dNewtonWorld::Collide(const dFloat* const matrix, const dNewtonCollision* const shape, int layerMask)
+{
+	hitInfo.clearData();
+	hitInfo.layermask = layerMask;
+	NewtonWorldCollide(m_world, matrix, shape->m_shape, &hitInfo, &rayPreFilterCallback, NULL, 4, 0);
 }
 
 float dNewtonWorld::rayFilterCallback(const NewtonBody* const body, const NewtonCollision* const shapeHit, const dFloat* const hitContact, const dFloat* const hitNormal, dLong collisionID, void* const userData, dFloat intersectParam)
@@ -388,9 +394,14 @@ void dNewtonWorld::OnContactCollision(const NewtonJoint* contactJoint, dFloat ti
 		NewtonMaterial* const material = NewtonContactGetMaterial(contact);
 
 		float normalImpact = NewtonMaterialGetContactNormalSpeed(material);
+		float penetration = NewtonMaterialGetContactPenetration(material);
 		//if(dbody0 && dbody0->m_onContactCallback)dbody0->m_onContactCallback(normalImpact);
-		if(dbody0->m_onContactCallback)dbody0->m_onContactCallback(normalImpact);
-		if(dbody1->m_onContactCallback)dbody1->m_onContactCallback(normalImpact);
+		float normal[3];
+		float position[3];
+		NewtonMaterialGetContactPositionAndNormal(material, body0, position, normal);
+		if(dbody0->m_onContactCallback)dbody0->m_onContactCallback(dbody1->GetUserData(), normal, normalImpact, penetration);
+		NewtonMaterialGetContactPositionAndNormal(material, body1, position, normal);
+		if(dbody1->m_onContactCallback)dbody1->m_onContactCallback(dbody0->GetUserData(), normal, normalImpact, penetration);
 
 		NewtonCollision* const newtonCollision0 = (NewtonCollision*)NewtonContactGetCollision0(contact);
 		NewtonCollision* const newtonCollision1 = (NewtonCollision*)NewtonContactGetCollision1(contact);
