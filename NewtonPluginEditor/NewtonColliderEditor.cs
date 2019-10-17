@@ -30,6 +30,7 @@ public abstract class NewtonColliderEditor : Editor
     protected void SetupBaseProps()
     {
         // Setup the SerializedProperties
+        m_autoSleepProp = serializedObject.FindProperty("m_autoSleep");
         m_showGizmoProp = serializedObject.FindProperty("m_showGizmo");
         m_posProp = serializedObject.FindProperty("m_posit");
         m_rotProp = serializedObject.FindProperty("m_rotation");
@@ -62,12 +63,14 @@ public abstract class NewtonColliderEditor : Editor
         EditorGUILayout.PropertyField(m_inheritScaleProp, new GUIContent("Inherit Scale"));
         EditorGUILayout.PropertyField(m_showGizmoProp, new GUIContent("Show Gizmo"));
         EditorGUILayout.PropertyField(m_isTriggerProp, new GUIContent("Is Trigger"));
+        EditorGUILayout.PropertyField(m_autoSleepProp, new GUIContent("Auto Sleep", "If the body reach equilibrium it go to sleep (to use less resources) until another body collide with it or forces and torques make it move."));
         EditorGUILayout.PropertyField(m_materialProp, new GUIContent("Material"));
         EditorGUILayout.PropertyField(m_layerProp, new GUIContent("Layer"));
 
         serializedObject.ApplyModifiedProperties();
     }
 
+    SerializedProperty m_autoSleepProp;
     SerializedProperty m_showGizmoProp;
     SerializedProperty m_posProp;
     SerializedProperty m_rotProp;

@@ -151,11 +151,22 @@ void* dNewtonWorld::Raycast(float p0x, float p0y, float p0z, float p1x, float p1
 	}
 }
 
-void dNewtonWorld::Collide(const dFloat* const matrix, const dNewtonCollision* const shape, int layerMask)
+void* dNewtonWorld::Collide(const dFloat* const matrix, const dNewtonCollision* const shape, int layerMask)
+{
+	//NewtonWorldConvexCastReturnInfo info;
+	hitInfo.clearData();
+	hitInfo.layermask = layerMask;
+	if (NewtonWorldCollide(m_world, matrix, shape->m_shape, &hitInfo, &rayPreFilterCallback, &collideInfo, 1, 0))return &collideInfo;
+	else return nullptr;
+}
+
+void* dNewtonWorld::ConvexCast(const dFloat* const matrix, const dFloat* const target, dNewtonCollision* const collision, int layerMask, int max_contacts)
 {
 	hitInfo.clearData();
 	hitInfo.layermask = layerMask;
-	NewtonWorldCollide(m_world, matrix, shape->m_shape, &hitInfo, &rayPreFilterCallback, NULL, 4, 0);
+	//collideInfo.clearData();
+	if(NewtonWorldConvexCast(m_world, matrix, target, collision->m_shape, nullptr, &hitInfo, &rayPreFilterCallback, &collideInfo, 1, 0))return &collideInfo;
+	else return nullptr;
 }
 
 float dNewtonWorld::rayFilterCallback(const NewtonBody* const body, const NewtonCollision* const shapeHit, const dFloat* const hitContact, const dFloat* const hitNormal, dLong collisionID, void* const userData, dFloat intersectParam)

@@ -84,6 +84,9 @@ class dNewtonBody: public dAlloc
 	bool GetContinuousCollisionMode() const;
 	void SetContinuousCollisionMode(bool mode) const;
 
+	bool GetAutoSleep() const;
+	void SetAutoSleep(bool mode) const;
+
 	void SetCallbacks(OnContactCallback onContactCallback);
 
 	protected:

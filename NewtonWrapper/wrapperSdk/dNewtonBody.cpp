@@ -103,6 +103,16 @@ void dNewtonBody::SetContinuousCollisionMode(bool mode) const
 	NewtonBodySetContinuousCollisionMode(m_body, mode);
 }
 
+bool dNewtonBody::GetAutoSleep() const
+{
+	return NewtonBodyGetAutoSleep(m_body) ? true : false;
+}
+
+void dNewtonBody::SetAutoSleep(bool mode) const
+{
+	NewtonBodySetAutoSleep(m_body, mode);
+}
+
 void* dNewtonBody::GetInterpolatedPosition()
 {
 	const dNewtonWorld* const world = (dNewtonWorld*)NewtonWorldGetUserData(NewtonBodyGetWorld(m_body));

@@ -99,6 +99,7 @@ public class NewtonBody : MonoBehaviour
 
         m_body.SetLinearDamping(m_linearDamping);
         m_body.SetAngularDamping(m_angularDamping.x, m_angularDamping.y, m_angularDamping.z);
+        m_body.SetAutoSleep(m_autoSleep);
 
         var handle = GCHandle.Alloc(this);
         m_body.SetUserData(GCHandle.ToIntPtr(handle));
@@ -367,6 +368,24 @@ public class NewtonBody : MonoBehaviour
         }
     }
 
+    public bool AutoSleep
+    {
+        get
+        {
+            if (m_body != null)
+                return m_body.GetAutoSleep();
+
+            return false;
+        }
+        set
+        {
+            if (m_body != null)
+            {
+                m_body.SetAutoSleep(value);
+            }
+        }
+    }
+
     protected virtual void CreateBodyAndCollision()
     {
         if(m_collision == null && m_body == null)
@@ -385,6 +404,7 @@ public class NewtonBody : MonoBehaviour
     public bool m_CalculateInertia = true;
     public bool m_isScene = false;
     public bool m_showGizmo = false;
+    public bool m_autoSleep = true;
     public float m_gizmoScale = 1.0f;
     public NewtonWorld m_world;
     public Vector3 m_forceAcc { get; set; }

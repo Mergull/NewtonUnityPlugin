@@ -65,6 +65,15 @@ class rayHitInfo
 	}
 
 };
+/*
+class convexCollideInfo
+{
+	float point[3];
+	float normal[3];
+	float penetration;
+	const NewtonCollision* collider;
+	const NewtonBody* body;
+};*/
 
 class dNewtonWorld: public dAlloc
 {
@@ -113,8 +122,8 @@ class dNewtonWorld: public dAlloc
 
 	// Return a hitinfo object if something was hit. LayerMask is used to exclude colliders from the raycast.
 	void* Raycast(float px, float py, float pz, float dx, float dy, float dz, int layerMask);
-	//void ConvexCast(const dFloat* const matrix, dNewtonCollision* const collision);
-	void Collide(const dFloat* const matrix, const dNewtonCollision* const shape, int layerMask);
+	void* ConvexCast(const dFloat* const matrix, const dFloat* const target, dNewtonCollision* const collision, int layerMask, int max_contacts = 0);
+	void* Collide(const dFloat* const matrix, const dNewtonCollision* const shape, int layerMask);
 	//int NewtonWorldConvexCast(const NewtonWorld* const newtonWorld, const dFloat* const matrix, const dFloat* const target, const NewtonCollision* const shape, dFloat* const param, void* const userData, NewtonWorldRayPrefilterCallback prefilter, NewtonWorldConvexCastReturnInfo* const info, int maxContactsCount, int threadIndex);
 	//int NewtonWorldCollide(const NewtonWorld* const newtonWorld, const dFloat* const matrix, const NewtonCollision* const shape, void* const userData, NewtonWorldRayPrefilterCallback prefilter, NewtonWorldConvexCastReturnInfo* const info, int maxContactsCount, int threadIndex);
 	static float rayFilterCallback(const NewtonBody* const body, const NewtonCollision* const shapeHit, const dFloat* const hitContact, const dFloat* const hitNormal, dLong collisionID, void* const userData, dFloat intersectParam);
@@ -159,7 +168,11 @@ class dNewtonWorld: public dAlloc
 	dMaterialProperties m_defaultMaterial;
 	dNewtonVehicleManager* m_vehicleManager;
 
-	rayHitInfo hitInfo;
+	union
+	{
+		rayHitInfo hitInfo;
+		NewtonWorldConvexCastReturnInfo collideInfo;
+	};
 
 	friend class dNewtonBody;
 	friend class dNewtonCollision;
