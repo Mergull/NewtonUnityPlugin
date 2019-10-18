@@ -38,6 +38,16 @@ internal struct _InternalRayHitInfo
     internal uint collisionID;
 }
 
+[StructLayout(LayoutKind.Sequential)]
+internal struct _InternalConvexCastInfo
+{
+    internal Vector4 point;
+    internal Vector4 normal;
+    internal long contactID;
+    internal IntPtr hitBody;
+    internal float penetration;
+}
+
 public struct NewtonRayHitInfo
 {
     public NewtonBody body;
@@ -271,6 +281,43 @@ public class NewtonWorld : MonoBehaviour
             hitInfo.position = info.position;
             hitInfo.normal = info.normal;
             hitInfo.collisionID = info.collisionID;
+            return true;
+        }
+
+        hitInfo.body = null;
+        //hitInfo.collider = null;
+        hitInfo.position = Vector3.zero;
+        hitInfo.normal = Vector3.zero;
+        hitInfo.collisionID = 0;
+        return false;
+    }
+
+    public bool Collide(/*Matrix4x4 matrix,*/ NewtonBody body, out NewtonRayHitInfo hitInfo, int layerMask = 0)
+    {
+        //dMatrix matrix = Utils.ToMatrix(body.transform.position, body.transform.rotation);
+        //GCHandle mat_handle = GCHandle.Alloc(matrix);
+        //dVector vec = new dVector(transform.position.x, transform.position.y, transform.position.z);
+        //dQuaternion quat = new dQuaternion(transform.rotation.w, transform.rotation.x, transform.rotation.y, transform.rotation.z);
+        dMatrix matrix = Utils.ToMatrix(body.transform.position, body.transform.rotation);
+        var hitInfoPtr = m_world.Collide(matrix, body.m_collision.GetShape(), layerMask);// m_world.Raycast(startPos.x, startPos.y, startPos.z, endPos.x, endPos.y, endPos.z, layerMask);
+        //mat_handle.Free();
+        if (hitInfoPtr != IntPtr.Zero)
+        {
+            _InternalConvexCastInfo info = (_InternalConvexCastInfo)Marshal.PtrToStructure(hitInfoPtr, typeof(_InternalConvexCastInfo));
+
+            if (info.hitBody != IntPtr.Zero)
+            {
+                hitInfo.body = (NewtonBody)GCHandle.FromIntPtr(info.hitBody).Target;
+            }
+            else
+            {
+                hitInfo.body = null;
+            }
+
+            //hitInfo.collider = null;
+            hitInfo.position = info.point;
+            hitInfo.normal = info.normal;
+            hitInfo.collisionID = 0;// info.collisionID;
             return true;
         }
 

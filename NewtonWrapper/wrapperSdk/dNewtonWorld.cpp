@@ -24,6 +24,7 @@
 #include "dNewtonWorld.h"
 #include "dNewtonCollision.h"
 #include "dNewtonVehicleManager.h"
+#include "dVector.h"
 
 #define D_DEFAULT_FPS 120.0f
 
@@ -151,12 +152,29 @@ void* dNewtonWorld::Raycast(float p0x, float p0y, float p0z, float p1x, float p1
 	}
 }
 
-void* dNewtonWorld::Collide(const dFloat* const matrix, const dNewtonCollision* const shape, int layerMask)
+void* dNewtonWorld::Collide(const dMatrix const matrix, const dNewtonCollision* const shape, int layerMask)
 {
 	//NewtonWorldConvexCastReturnInfo info;
 	hitInfo.clearData();
 	hitInfo.layermask = layerMask;
-	if (NewtonWorldCollide(m_world, matrix, shape->m_shape, &hitInfo, &rayPreFilterCallback, &collideInfo, 1, 0))return &collideInfo;
+	NewtonWorldConvexCastReturnInfo ret_info = NewtonWorldConvexCastReturnInfo();
+	//dMatrix matrixx = dMatrix(rotation,position);
+	//if (shape->m_shape == nullptr)return nullptr;
+	if (NewtonWorldCollide(m_world, &matrix[0][0], shape->m_shape, &hitInfo, &rayPreFilterCallback, &ret_info, 1, 0))
+	{
+		collideInfo.point[0] = ret_info.m_point[0];
+		collideInfo.point[1] = ret_info.m_point[1];
+		collideInfo.point[2] = ret_info.m_point[2];
+		collideInfo.normal[0] = ret_info.m_normal[0];
+		collideInfo.normal[1] = ret_info.m_normal[1];
+		collideInfo.normal[2] = ret_info.m_normal[2];
+		collideInfo.penetration = ret_info.m_penetration;
+		dNewtonBody* dBody = static_cast<dNewtonBody*>(NewtonBodyGetUserData(ret_info.m_hitBody));
+		collideInfo.managedBodyHandle = dBody->GetUserData();
+		//collideInfo.body = ret_info.m_hitBody;
+		collideInfo.contact_id = ret_info.m_contactID;
+		return &collideInfo;
+	}
 	else return nullptr;
 }
 
@@ -165,7 +183,12 @@ void* dNewtonWorld::ConvexCast(const dFloat* const matrix, const dFloat* const t
 	hitInfo.clearData();
 	hitInfo.layermask = layerMask;
 	//collideInfo.clearData();
-	if(NewtonWorldConvexCast(m_world, matrix, target, collision->m_shape, nullptr, &hitInfo, &rayPreFilterCallback, &collideInfo, 1, 0))return &collideInfo;
+	NewtonWorldConvexCastReturnInfo ret_info = NewtonWorldConvexCastReturnInfo();
+	if (NewtonWorldConvexCast(m_world, matrix, target, collision->m_shape, nullptr, &hitInfo, &rayPreFilterCallback, &ret_info, 1, 0))
+	{
+		//collideInfo.point[0] = ret_info.m_point[0];
+		return &collideInfo;
+	}
 	else return nullptr;
 }
 
