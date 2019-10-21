@@ -516,7 +516,7 @@ void dNewtonWorld::UpdateWorld()
 {
 	for (NewtonBody* bodyPtr = NewtonWorldGetFirstBody(m_world); bodyPtr; bodyPtr = NewtonWorldGetNextBody(m_world, bodyPtr)) {
 		dNewtonBody* const body = (dNewtonBody*)NewtonBodyGetUserData(bodyPtr);
-		body->InitForceAccumulators();
+		if(body)body->InitForceAccumulators();
 	}
 
 	// every rigid body update

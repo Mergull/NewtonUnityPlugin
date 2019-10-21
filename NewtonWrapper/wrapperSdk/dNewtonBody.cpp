@@ -349,7 +349,11 @@ void dNewtonBody::Destroy()
 {
 	if (m_body) {
 		NewtonWaitForUpdateToFinish(NewtonBodyGetWorld(m_body));
+
+		NewtonBodySetUserData(m_body, nullptr);
 		NewtonBodySetDestructorCallback(m_body, NULL);
+		NewtonBodySetForceAndTorqueCallback(m_body, nullptr);
+		m_onContactCallback = nullptr;
 		NewtonDestroyBody(m_body);
 		m_body = NULL;
 	}
