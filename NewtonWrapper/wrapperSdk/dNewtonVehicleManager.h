@@ -25,13 +25,13 @@
 #include "dAlloc.h"
 
 class dNewtonWorld;
-
+/*
 class dNewtonVehicleManager: public dCustomVehicleControllerManager
 {
 	public:
 	dNewtonVehicleManager(NewtonWorld* const world, int materialsCount, int* const materialList);
 	~dNewtonVehicleManager();
-};
+};*/
 
 
 #endif

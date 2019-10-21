@@ -57,7 +57,7 @@ class dNewtonVehicle: public dNewtonDynamicBody
 
 //	dCustomVehicleController::dBodyPartTire* AddTire(dTireData tire);
 
-	dCustomVehicleController* m_controller;
+	//dCustomVehicleController* m_controller;
 };
 
 

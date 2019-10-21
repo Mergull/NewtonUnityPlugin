@@ -36,13 +36,13 @@ dNewtonVehicle::dNewtonVehicle(dNewtonWorld* const world, dNewtonCollision* cons
 	dFloat gravidyMag = dSqrt(world->GetGravity().DotProduct3(world->GetGravity()));
 //	m_controller = vehicleManager->CreateVehicle(m_body, vehicleFrame, forceCallback, this, gravidyMag);
 	dAssert(0);
-	m_controller = NULL;
+	//m_controller = NULL;
 }
 
 dNewtonVehicle::~dNewtonVehicle()
 {
-	dNewtonVehicleManager* const vehicleManager = (dNewtonVehicleManager*) m_controller->GetManager();
-	vehicleManager->DestroyController(m_controller);
+	/*dNewtonVehicleManager* const vehicleManager = (dNewtonVehicleManager*) m_controller->GetManager();
+	vehicleManager->DestroyController(m_controller);*/
 }
 
 

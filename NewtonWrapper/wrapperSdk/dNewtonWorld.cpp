@@ -75,20 +75,20 @@ dNewtonWorld::dNewtonWorld()
 	// create a vehicle controller manage for all vehicles.
 	int materialList[] = { defaultMaterial };
 	// create a vehicle controller manager
-	m_vehicleManager = new dNewtonVehicleManager(m_world, 1, materialList);
+	//m_vehicleManager = new dNewtonVehicleManager(m_world, 1, materialList);
 }
 
 dNewtonWorld::~dNewtonWorld()
 {
 	NewtonWaitForUpdateToFinish (m_world);
 
-	if (m_vehicleManager) {
+	/*if (m_vehicleManager) {
 		while (m_vehicleManager->GetFirst()) {
 			dCustomControllerManager<dCustomVehicleController>::dListNode* const node = m_vehicleManager->GetFirst();
 			m_vehicleManager->DestroyController(&node->GetInfo());
 		}
 	}
-	m_vehicleManager = NULL;
+	m_vehicleManager = NULL;*/
 
 	dList<dNewtonCollision*>::dListNode* next;
 	for (dList<dNewtonCollision*>::dListNode* node = m_collisionCache.GetFirst(); node; node = next) {
@@ -418,6 +418,7 @@ void dNewtonWorld::OnContactCollision(const NewtonJoint* contactJoint, dFloat ti
 	NewtonBody* const body1 = NewtonJointGetBody1(contactJoint);
 	dNewtonBody* const dbody0 = (dNewtonBody*)NewtonBodyGetUserData(body0);
 	dNewtonBody* const dbody1 = (dNewtonBody*)NewtonBodyGetUserData(body1);
+	if (!dbody0 || !dbody1)return;
 //	dbody0->m_onCollision(dbody1);
 //	dbody1->m_onCollision(dbody0);
 

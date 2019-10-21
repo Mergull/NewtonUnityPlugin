@@ -21,7 +21,7 @@
 
 #include "stdafx.h"
 #include "dNewtonVehicleManager.h"
-
+/*
 dNewtonVehicleManager::dNewtonVehicleManager(NewtonWorld* const world, int materialsCount, int* const materialList)
 	:dCustomVehicleControllerManager(world, materialsCount, materialList)
 {
@@ -30,5 +30,5 @@ dNewtonVehicleManager::dNewtonVehicleManager(NewtonWorld* const world, int mater
 dNewtonVehicleManager::~dNewtonVehicleManager()
 {
 
-}
+}*/
 
