@@ -124,7 +124,8 @@ class dNewtonWorld: public dAlloc
 	// Return a hitinfo object if something was hit. LayerMask is used to exclude colliders from the raycast.
 	void* Raycast(float px, float py, float pz, float dx, float dy, float dz, int layerMask);
 	void* ConvexCast(const dFloat* const matrix, const dFloat* const target, dNewtonCollision* const collision, int layerMask, int max_contacts = 0);
-	void* Collide(const dMatrix const matrix, const dNewtonCollision* const shape, int layerMask);
+	void* Collide(const dMatrix matrix, const dNewtonCollision* const shape, int layerMask);
+	void* ContinuousCollide(const dMatrix matrix1, const dMatrix matrix2, const dVector veloctiy1, const dVector velocity2, const dVector omega1, const dVector omega2, dNewtonCollision* collision1, dNewtonCollision* collision2, int max_contacts);
 	//int NewtonWorldConvexCast(const NewtonWorld* const newtonWorld, const dFloat* const matrix, const dFloat* const target, const NewtonCollision* const shape, dFloat* const param, void* const userData, NewtonWorldRayPrefilterCallback prefilter, NewtonWorldConvexCastReturnInfo* const info, int maxContactsCount, int threadIndex);
 	//int NewtonWorldCollide(const NewtonWorld* const newtonWorld, const dFloat* const matrix, const NewtonCollision* const shape, void* const userData, NewtonWorldRayPrefilterCallback prefilter, NewtonWorldConvexCastReturnInfo* const info, int maxContactsCount, int threadIndex);
 	static float rayFilterCallback(const NewtonBody* const body, const NewtonCollision* const shapeHit, const dFloat* const hitContact, const dFloat* const hitNormal, dLong collisionID, void* const userData, dFloat intersectParam);

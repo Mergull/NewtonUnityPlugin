@@ -60,6 +60,16 @@ public class NewtonBody : MonoBehaviour
     {
         IntPtr positionPtr = m_body.GetInterpolatedPosition();
         IntPtr rotationPtr = m_body.GetInterpolatedRotation();
+        if(m_interpolate)
+        {
+            positionPtr = m_body.GetInterpolatedPosition();
+            rotationPtr = m_body.GetInterpolatedRotation();
+        }
+        else
+        {
+            positionPtr = m_body.GetPosition();
+            rotationPtr = m_body.GetRotation();
+        }
         Marshal.Copy(positionPtr, m_positionPtr, 0, 3);
         Marshal.Copy(rotationPtr, m_rotationPtr, 0, 4);
         transform.position = new Vector3(m_positionPtr[0], m_positionPtr[1], m_positionPtr[2]);
@@ -100,6 +110,7 @@ public class NewtonBody : MonoBehaviour
         m_body.SetLinearDamping(m_linearDamping);
         m_body.SetAngularDamping(m_angularDamping.x, m_angularDamping.y, m_angularDamping.z);
         m_body.SetAutoSleep(m_autoSleep);
+        m_body.SetContinuousCollisionMode(m_continuousCollision);
 
         var handle = GCHandle.Alloc(this);
         m_body.SetUserData(GCHandle.ToIntPtr(handle));
@@ -405,6 +416,8 @@ public class NewtonBody : MonoBehaviour
     public bool m_isScene = false;
     public bool m_showGizmo = false;
     public bool m_autoSleep = true;
+    public bool m_continuousCollision = false;
+    public bool m_interpolate = true;
     public float m_gizmoScale = 1.0f;
     public NewtonWorld m_world;
     public Vector3 m_forceAcc { get; set; }

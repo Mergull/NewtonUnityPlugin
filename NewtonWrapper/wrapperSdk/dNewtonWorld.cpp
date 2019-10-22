@@ -152,7 +152,7 @@ void* dNewtonWorld::Raycast(float p0x, float p0y, float p0z, float p1x, float p1
 	}
 }
 
-void* dNewtonWorld::Collide(const dMatrix const matrix, const dNewtonCollision* const shape, int layerMask)
+void* dNewtonWorld::Collide(const dMatrix matrix, const dNewtonCollision* shape, int layerMask)
 {
 	//NewtonWorldConvexCastReturnInfo info;
 	hitInfo.clearData();
@@ -176,6 +176,33 @@ void* dNewtonWorld::Collide(const dMatrix const matrix, const dNewtonCollision* 
 		return &collideInfo;
 	}
 	else return nullptr;
+}
+
+void* dNewtonWorld::ContinuousCollide(const dMatrix matrix1, const dMatrix matrix2, const dVector veloctiy1, const dVector velocity2, const dVector omega1, const dVector omega2, dNewtonCollision* collision1, dNewtonCollision* collision2, int max_contacts)
+{
+	dFloat timeOfImpact;
+	dVector contacts;
+	dVector normal;
+	dFloat penetration;
+	dLong contact_id1;
+	dLong contact_id2;
+	if (NewtonCollisionCollideContinue(m_world, 1, 0.001, collision1->m_shape, &matrix1[0][0], &veloctiy1[0], &omega1[0], collision2->m_shape, &matrix2[0][0], &velocity2[0], &omega2[0], &timeOfImpact, &contacts[0], &normal[0], &penetration, &contact_id1, &contact_id2, 0))
+	{
+		collideInfo.point[0] = contacts[0];
+		collideInfo.point[1] = contacts[1];
+		collideInfo.point[2] = contacts[2];
+		collideInfo.normal[0] = normal[0];
+		collideInfo.normal[1] = normal[1];
+		collideInfo.normal[2] = normal[2];
+		collideInfo.penetration = penetration;
+		/*dNewtonBody* dBody = static_cast<dNewtonBody*>(NewtonBodyGetUserData(ret_info.m_hitBody));
+		collideInfo.managedBodyHandle = dBody->GetUserData();*/
+		collideInfo.managedBodyHandle = nullptr;
+		//collideInfo.body = ret_info.m_hitBody;
+		collideInfo.contact_id = contact_id2;
+		return &collideInfo;
+	}
+	return nullptr;
 }
 
 void* dNewtonWorld::ConvexCast(const dFloat* const matrix, const dFloat* const target, dNewtonCollision* const collision, int layerMask, int max_contacts)
