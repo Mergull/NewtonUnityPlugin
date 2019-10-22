@@ -186,7 +186,8 @@ void* dNewtonWorld::ContinuousCollide(const dMatrix matrix1, const dMatrix matri
 	dFloat penetration;
 	dLong contact_id1;
 	dLong contact_id2;
-	if (NewtonCollisionCollideContinue(m_world, 1, 0.001, collision1->m_shape, &matrix1[0][0], &veloctiy1[0], &omega1[0], collision2->m_shape, &matrix2[0][0], &velocity2[0], &omega2[0], &timeOfImpact, &contacts[0], &normal[0], &penetration, &contact_id1, &contact_id2, 0))
+
+	if (NewtonCollisionCollideContinue(m_world, 1, m_timeStep, collision1->m_shape, &matrix1[0][0], &veloctiy1[0], &omega1[0], collision2->m_shape, &matrix2[0][0], &velocity2[0], &omega2[0], &timeOfImpact, &contacts[0], &normal[0], &penetration, &contact_id1, &contact_id2, 0))
 	{
 		collideInfo.point[0] = contacts[0];
 		collideInfo.point[1] = contacts[1];

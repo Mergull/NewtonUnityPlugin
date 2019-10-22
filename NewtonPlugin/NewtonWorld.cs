@@ -341,13 +341,14 @@ public class NewtonWorld : MonoBehaviour
         dVector velocity2 = new dVector(body2.Velocity.x, body2.Velocity.y, body2.Velocity.z);
         dVector omega1 = new dVector(body1.Omega.x, body1.Omega.y, body1.Omega.z);
         dVector omega2 = new dVector(body2.Omega.x, body2.Omega.y, body2.Omega.z);
+
         var hitInfoPtr = m_world.ContinuousCollide(matrix1, matrix2, velocity1, velocity2, omega1, omega2, body1.m_collision.GetShape(), body2.m_collision.GetShape(), 1);// m_world.Raycast(startPos.x, startPos.y, startPos.z, endPos.x, endPos.y, endPos.z, layerMask);
         //mat_handle.Free();
         if (hitInfoPtr != IntPtr.Zero)
         {
             _InternalConvexCastInfo info = (_InternalConvexCastInfo)Marshal.PtrToStructure(hitInfoPtr, typeof(_InternalConvexCastInfo));
 
-            info.hitBody = body2;
+            hitInfo.body = body2;
             /*if (info.hitBody != IntPtr.Zero)
             {
                 hitInfo.body = (NewtonBody)GCHandle.FromIntPtr(info.hitBody).Target;
