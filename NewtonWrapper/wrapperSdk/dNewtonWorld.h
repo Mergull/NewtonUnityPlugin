@@ -131,7 +131,7 @@ class dNewtonWorld: public dAlloc
 	static float rayFilterCallback(const NewtonBody* const body, const NewtonCollision* const shapeHit, const dFloat* const hitContact, const dFloat* const hitNormal, dLong collisionID, void* const userData, dFloat intersectParam);
 	static unsigned rayPreFilterCallback(const NewtonBody* const body, const NewtonCollision* const collision, void* const userData);
 
-
+	int GetUpdateStepsCount();
 
 	dNewtonVehicleManager* GetVehicleManager() const;
 	void SaveSerializedScene(const char* const sceneName);
@@ -162,6 +162,7 @@ class dNewtonWorld: public dAlloc
 	
 	dFloat m_timeStep;
 	dFloat m_interpotationParam;
+	int m_stepsCount;
 
 	dVector  m_gravity;
 	bool m_asyncUpdateMode;

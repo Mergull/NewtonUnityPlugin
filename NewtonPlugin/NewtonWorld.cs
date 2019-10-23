@@ -250,6 +250,11 @@ public class NewtonWorld : MonoBehaviour
         }
     }
 
+    int GetUpdateStepsCount()
+    {
+        return m_world.GetUpdateStepsCount();
+    }
+
     private void OnBodyTransformUpdate()
     {
         foreach(NewtonBody bodyPhysics in m_bodies)
