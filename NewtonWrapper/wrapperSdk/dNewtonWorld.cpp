@@ -493,6 +493,7 @@ void dNewtonWorld::Update(dFloat timestepInSeconds)
 	dLong timestepMicroSeconds = dClamp((dLong)(double(timestepInSeconds) * 1000000.0f), dLong(0), m_timeStepInMicroSeconds * m_maxInterations);
 	m_realTimeInMicroSeconds += timestepMicroSeconds;
 	m_stepsCount = (int)(m_realTimeInMicroSeconds / m_timeStepInMicroSeconds);
+	if (m_stepsCount > m_maxInterations)m_stepsCount = m_maxInterations;
 
 	for (int doUpate = m_maxInterations; m_realTimeInMicroSeconds >= m_timeStepInMicroSeconds; doUpate--) {
 		if (doUpate) {

@@ -42,6 +42,8 @@ class dNewtonCollision: public dAlloc
 	virtual void DebugRender(OnDrawFaceCallback callback, const dVector eyePoint);
 	virtual void SetMaterialID(int materialId);
 	virtual void SetLayer(int layer);
+	
+	int GetMaterialID();
 
 	protected:
 	virtual void SetShape(NewtonCollision* const shape);

@@ -64,6 +64,11 @@ void dNewtonCollision::SetMaterialID(int materialId)
 	m_materialID = materialId;
 }
 
+int dNewtonCollision::GetMaterialID()
+{
+	return m_materialID;
+}
+
 void dNewtonCollision::SetLayer(int layer)
 {
 	m_layer = layer;

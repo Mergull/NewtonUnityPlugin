@@ -220,22 +220,26 @@ public class NewtonWorld : MonoBehaviour
                 {
                     for (IntPtr contact = m_world.GetFirstContactJoint(bodyPhysics.m_body); contact != IntPtr.Zero; contact = m_world.GetNextContactJoint(bodyPhysics.m_body, contact))
                     {
-                        var body0 = (NewtonBody)GCHandle.FromIntPtr(m_world.GetBody0UserData(contact)).Target;
-                        var body1 = (NewtonBody)GCHandle.FromIntPtr(m_world.GetBody1UserData(contact)).Target;
+                        IntPtr user_data = m_world.GetBody0UserData(contact);
+                        if (user_data == null) continue;
+                        var body0 = (NewtonBody)GCHandle.FromIntPtr(user_data).Target;
+                        user_data = m_world.GetBody1UserData(contact);
+                        if (user_data == null) continue;
+                        var body1 = (NewtonBody)GCHandle.FromIntPtr(user_data).Target;
                         var otherBody = bodyPhysics == body0 ? body1 : body0;
                         script.OnCollision(otherBody);
 
-                        if(script.m_contactNotification)
+                        /*if(script.m_contactNotification)
                         {
                             for (IntPtr ct = m_world.GetFirstContact(contact); ct != IntPtr.Zero; ct = m_world.GetNextContact(contact, ct))
                             {
                                 //var normImpact = dNewtonContact.GetContactNormalImpact(ct);]
-                                /*IntPtr info = dNewtonContact.GetContactInfo(bodyPhysics.GetBody().GetBody(), ct);
+                                IntPtr info = dNewtonContact.GetContactInfo(bodyPhysics.GetBody().GetBody(), ct);
                                 float[] normImpact = new float[22];
                                 Marshal.Copy(info, normImpact, 0, 22);
-                                script.OnContact(otherBody, normImpact[18]);*/
+                                script.OnContact(otherBody, normImpact[18]);
                             }
-                        }
+                        }*/
 
                         script.OnPostCollision(otherBody);
                     }
@@ -250,7 +254,7 @@ public class NewtonWorld : MonoBehaviour
         }
     }
 
-    int GetUpdateStepsCount()
+    public int GetUpdateStepsCount()
     {
         return m_world.GetUpdateStepsCount();
     }
