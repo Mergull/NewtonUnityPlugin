@@ -175,7 +175,8 @@ void* dNewtonWorld::Collide(const dMatrix matrix, const dNewtonCollision* shape,
 		collideInfo.normal[2] = ret_info.m_normal[2];
 		collideInfo.penetration = ret_info.m_penetration;
 		dNewtonBody* dBody = static_cast<dNewtonBody*>(NewtonBodyGetUserData(ret_info.m_hitBody));
-		collideInfo.managedBodyHandle = dBody->GetUserData();
+		if (dBody == nullptr)collideInfo.managedBodyHandle;
+		else collideInfo.managedBodyHandle = dBody->GetUserData();
 		//collideInfo.body = ret_info.m_hitBody;
 		collideInfo.contact_id = ret_info.m_contactID;
 		return &collideInfo;
@@ -412,7 +413,9 @@ void* dNewtonWorld::GetBody0UserData(void* const contact) const
 {
 	NewtonJoint* const contactJoint = (NewtonJoint*)contact;
 	NewtonBody* const body = NewtonJointGetBody0(contactJoint);
+	if (body == nullptr)return nullptr;
 	dNewtonBody* const dBody = (dNewtonBody*)NewtonBodyGetUserData(body);
+	if (dBody == nullptr)return nullptr;
 	return dBody->GetUserData();
 }
 
@@ -420,7 +423,9 @@ void* dNewtonWorld::GetBody1UserData(void* const contact) const
 {
 	NewtonJoint* const contactJoint = (NewtonJoint*)contact;
 	NewtonBody* const body = NewtonJointGetBody1(contactJoint);
+	if (body == nullptr)return nullptr;
 	dNewtonBody* const dBody = (dNewtonBody*)NewtonBodyGetUserData(body);
+	if (dBody == nullptr)return nullptr;
 	return dBody->GetUserData();
 }
 

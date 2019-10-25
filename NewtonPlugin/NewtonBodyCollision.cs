@@ -75,6 +75,9 @@ public class NewtonBodyCollision
             NewtonCompoundCollider compoundCollider = body.gameObject.AddComponent<NewtonCompoundCollider>();
             dNewtonCollisionCompound compoundShape = (dNewtonCollisionCompound)compoundCollider.Create(body.m_world);
 
+            compoundCollider.m_material = colliderList[0].m_collider.m_material;
+            compoundCollider.SetMaterial(compoundShape);
+
             m_collidersArray[0].m_shape = compoundShape;
             m_collidersArray[0].m_collider = compoundCollider;
 

@@ -60,6 +60,7 @@ public class NewtonWorldEditor : Editor
         m_solverMaxIterationsCountProp = serializedObject.FindProperty("m_maxIterations");
         m_useParallerSolverProp = serializedObject.FindProperty("m_useParallerSolver");
         m_pluginsOptionsProp = serializedObject.FindProperty("m_pluginsOptions");
+        m_materialsPathsProp = serializedObject.FindProperty("m_materialsPaths");
 
         m_defaultRestitutionProp = serializedObject.FindProperty("m_defaultRestitution");
         m_defaultStaticFrictionProp = serializedObject.FindProperty("m_defaultStaticFriction");
@@ -75,6 +76,8 @@ public class NewtonWorldEditor : Editor
         EditorGUILayout.PropertyField(m_asyncUpdateProp, new GUIContent("Asynchronous update"));
         EditorGUILayout.PropertyField(m_useParallerSolverProp, new GUIContent("Solve large island in parallel"));
         EditorGUILayout.IntPopup(m_pluginsOptionsProp, m_pluginsOptions, m_pluginsValues, new GUIContent("Available Plugins"));
+
+        EditorGUILayout.PropertyField(m_materialsPathsProp, new GUIContent("Materials paths","Paths used for loading materials interactions. Path should be relative to \"Resources\" folder."), true); 
 
         EditorGUILayout.PropertyField(m_serializeSceneOnceProp, new GUIContent("Serialize scene once"));
         EditorGUILayout.PropertyField(m_saveSceneNameProp, new GUIContent("Serialize scene name"));
@@ -107,7 +110,7 @@ public class NewtonWorldEditor : Editor
     SerializedProperty m_solverIterationsCountProp;
     SerializedProperty m_solverMaxIterationsCountProp;
 
-
+    SerializedProperty m_materialsPathsProp;
     SerializedProperty m_pluginsOptionsProp;
 
     SerializedProperty m_defaultRestitutionProp;

@@ -158,7 +158,13 @@ public class NewtonWorld : MonoBehaviour
 
     private void InitScene()
     {
-        Resources.LoadAll("Newton Materials");
+        /*Resources.LoadAll("Newton Materials", typeof(NewtonMaterialInteraction));
+
+        foreach (String path in m_materialsPaths)
+        {
+            Resources.LoadAll(path, typeof(NewtonMaterialInteraction));
+        }
+
         NewtonMaterialInteraction[] materialList = Resources.FindObjectsOfTypeAll<NewtonMaterialInteraction>();
         foreach (NewtonMaterialInteraction materialInteraction in materialList)
         {
@@ -168,6 +174,23 @@ public class NewtonWorld : MonoBehaviour
                 int id0 = materialInteraction.m_material_0.GetInstanceID();
                 int id1 = materialInteraction.m_material_1.GetInstanceID();
                 m_world.SetMaterialInteraction(id0, id1, materialInteraction.m_restitution, materialInteraction.m_staticFriction, materialInteraction.m_kineticFriction, materialInteraction.m_collisionEnabled);
+            }
+        }*/
+
+        foreach (String path in m_materialsPaths)
+        {
+            NewtonMaterialInteraction[] materialList = Resources.LoadAll<NewtonMaterialInteraction>(path);
+
+            foreach (NewtonMaterialInteraction materialInteraction in materialList)
+            {
+                // register all material interactions.
+                if (materialInteraction.m_material_0 && materialInteraction.m_material_1)
+                {
+                    int id0 = materialInteraction.m_material_0.GetInstanceID();
+                    int id1 = materialInteraction.m_material_1.GetInstanceID();
+
+                    m_world.SetMaterialInteraction(id0, id1, materialInteraction.m_restitution, materialInteraction.m_staticFriction, materialInteraction.m_kineticFriction, materialInteraction.m_collisionEnabled);
+                }
             }
         }
 
@@ -221,10 +244,10 @@ public class NewtonWorld : MonoBehaviour
                     for (IntPtr contact = m_world.GetFirstContactJoint(bodyPhysics.m_body); contact != IntPtr.Zero; contact = m_world.GetNextContactJoint(bodyPhysics.m_body, contact))
                     {
                         IntPtr user_data = m_world.GetBody0UserData(contact);
-                        if (user_data == null) continue;
+                        if (user_data == IntPtr.Zero) continue;
                         var body0 = (NewtonBody)GCHandle.FromIntPtr(user_data).Target;
                         user_data = m_world.GetBody1UserData(contact);
-                        if (user_data == null) continue;
+                        if (user_data == IntPtr.Zero) continue;
                         var body1 = (NewtonBody)GCHandle.FromIntPtr(user_data).Target;
                         var otherBody = bodyPhysics == body0 ? body1 : body0;
                         script.OnCollision(otherBody);
@@ -394,6 +417,7 @@ public class NewtonWorld : MonoBehaviour
     public int m_subSteps = 2;
     public int m_pluginsOptions = 0;
     public int m_maxIterations = 7;
+    public string[] m_materialsPaths = new string[] { "Newton Materials" };
 
     public Vector3 m_gravity = new Vector3(0.0f, -9.8f, 0.0f);
 

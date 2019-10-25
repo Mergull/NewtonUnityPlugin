@@ -27,6 +27,9 @@ using System.Runtime.InteropServices;
 [CreateAssetMenu(menuName = "Newton Material")]
 public class NewtonMaterial : ScriptableObject
 {
+    public float m_restitution = 0.3f;
+    public float m_staticFriction = 0.9f;
+    public float m_kineticFriction = 0.75f;
 }
 
 
