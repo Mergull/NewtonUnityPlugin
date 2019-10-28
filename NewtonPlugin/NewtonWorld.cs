@@ -43,9 +43,11 @@ internal struct _InternalConvexCastInfo
 {
     internal Vector4 point;
     internal Vector4 normal;
-    internal long contactID;
+    internal long contactID1;
+    internal long contactID2;
     internal IntPtr hitBody;
     internal float penetration;
+    internal float timeOfImpact;
 }
 
 public struct NewtonRayHitInfo
@@ -56,6 +58,17 @@ public struct NewtonRayHitInfo
     public Vector3 normal;
     public uint collisionID;
 
+}
+
+public struct NewtonCollideInfo
+{
+    public NewtonBody body;
+    public uint collisionID1;
+    public uint collisionID2;
+    public Vector3 position;
+    public Vector3 normal;
+    public float penetration;
+    public float timeOfImpact;
 }
 
 
@@ -324,7 +337,7 @@ public class NewtonWorld : MonoBehaviour
         return false;
     }
 
-    public bool Collide(/*Matrix4x4 matrix,*/ NewtonBody body, out NewtonRayHitInfo hitInfo, int layerMask = 0)
+    public bool Collide(/*Matrix4x4 matrix,*/ NewtonBody body, out NewtonCollideInfo hitInfo, int layerMask = 0)
     {
         //dMatrix matrix = Utils.ToMatrix(body.transform.position, body.transform.rotation);
         //GCHandle mat_handle = GCHandle.Alloc(matrix);
@@ -349,7 +362,11 @@ public class NewtonWorld : MonoBehaviour
             //hitInfo.collider = null;
             hitInfo.position = info.point;
             hitInfo.normal = info.normal;
-            hitInfo.collisionID = 0;// info.collisionID;
+            //hitInfo.collisionID = 0;
+            hitInfo.collisionID1 = 0;
+            hitInfo.collisionID2 = (uint)info.contactID2;
+            hitInfo.penetration = info.penetration;
+            hitInfo.timeOfImpact = 0;
             return true;
         }
 
@@ -357,11 +374,15 @@ public class NewtonWorld : MonoBehaviour
         //hitInfo.collider = null;
         hitInfo.position = Vector3.zero;
         hitInfo.normal = Vector3.zero;
-        hitInfo.collisionID = 0;
+        //hitInfo.collisionID = 0;
+        hitInfo.collisionID1 = 0;
+        hitInfo.collisionID2 = 0;
+        hitInfo.penetration = 0;
+        hitInfo.timeOfImpact = 0;
         return false;
     }
 
-    public bool ContinuousCollide(NewtonBody body1, NewtonBody body2, out NewtonRayHitInfo hitInfo)
+    public bool ContinuousCollide(NewtonBody body1, NewtonBody body2, out NewtonCollideInfo hitInfo)
     {
         //dMatrix matrix = Utils.ToMatrix(body.transform.position, body.transform.rotation);
         //GCHandle mat_handle = GCHandle.Alloc(matrix);
@@ -393,7 +414,11 @@ public class NewtonWorld : MonoBehaviour
             //hitInfo.collider = null;
             hitInfo.position = info.point;
             hitInfo.normal = info.normal;
-            hitInfo.collisionID = 0;// info.collisionID;
+            //hitInfo.collisionID = 0;
+            hitInfo.collisionID1 = (uint)info.contactID1;
+            hitInfo.collisionID2 = (uint)info.contactID2;
+            hitInfo.penetration = info.penetration;
+            hitInfo.timeOfImpact = info.timeOfImpact;
             return true;
         }
 
@@ -401,7 +426,11 @@ public class NewtonWorld : MonoBehaviour
         //hitInfo.collider = null;
         hitInfo.position = Vector3.zero;
         hitInfo.normal = Vector3.zero;
-        hitInfo.collisionID = 0;
+        //hitInfo.collisionID = 0;
+        hitInfo.collisionID1 = 0;
+        hitInfo.collisionID2 = 0;
+        hitInfo.penetration = 0;
+        hitInfo.timeOfImpact = 0;
         return false;
     }
 

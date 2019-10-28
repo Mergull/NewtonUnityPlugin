@@ -177,6 +177,13 @@ void* dNewtonBody::GetOmega()
 	return &m_omega;
 }
 
+void dNewtonBody::GetMass(void* mass, void* inertia)
+{
+	NewtonBodyGetMass(m_body, &m_mass[0], &m_inertia[0][0], &m_inertia[1][0], &m_inertia[2][0]);
+	mass = &m_mass;
+	inertia = &m_inertia;
+}
+
 void dNewtonBody::SetVelocity(dFloat x, dFloat y, dFloat z)
 {
 	dVector vel(x,y,z);

@@ -71,9 +71,11 @@ class convexCollideInfo
 public:
 	float point[4];
 	float normal[4];
-	dLong contact_id;
+	dLong contact_id1;
+	dLong contact_id2;
 	const void* managedBodyHandle;
 	float penetration;
+	float timeOfImpact;
 };
 
 class dNewtonWorld: public dAlloc

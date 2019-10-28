@@ -178,7 +178,7 @@ void* dNewtonWorld::Collide(const dMatrix matrix, const dNewtonCollision* shape,
 		if (dBody == nullptr)collideInfo.managedBodyHandle;
 		else collideInfo.managedBodyHandle = dBody->GetUserData();
 		//collideInfo.body = ret_info.m_hitBody;
-		collideInfo.contact_id = ret_info.m_contactID;
+		collideInfo.contact_id2 = ret_info.m_contactID;
 		return &collideInfo;
 	}
 	else return nullptr;
@@ -206,7 +206,9 @@ void* dNewtonWorld::ContinuousCollide(const dMatrix matrix1, const dMatrix matri
 		collideInfo.managedBodyHandle = dBody->GetUserData();*/
 		collideInfo.managedBodyHandle = nullptr;
 		//collideInfo.body = ret_info.m_hitBody;
-		collideInfo.contact_id = contact_id2;
+		collideInfo.contact_id1 = contact_id1;
+		collideInfo.contact_id2 = contact_id2;
+		collideInfo.timeOfImpact = timeOfImpact;
 		return &collideInfo;
 	}
 	return nullptr;
