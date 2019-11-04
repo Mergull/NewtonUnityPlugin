@@ -382,12 +382,40 @@ public class NewtonWorld : MonoBehaviour
         return false;
     }
 
+    public bool Collide(NewtonBody body1, NewtonBody body2, out NewtonCollideInfo hitInfo)
+    {
+        dMatrix matrix1 = Utils.ToMatrix(body1.Position, body1.Rotation);
+        dMatrix matrix2 = Utils.ToMatrix(body2.Position, body2.Rotation);
+
+        var hitInfoPtr = m_world.Collide(matrix1, matrix2, body1.m_collision.GetShape(), body2.m_collision.GetShape(), 1);// m_world.Raycast(startPos.x, startPos.y, startPos.z, endPos.x, endPos.y, endPos.z, layerMask);
+        //mat_handle.Free();
+        if (hitInfoPtr != IntPtr.Zero)
+        {
+            _InternalConvexCastInfo info = (_InternalConvexCastInfo)Marshal.PtrToStructure(hitInfoPtr, typeof(_InternalConvexCastInfo));
+
+            hitInfo.body = body2;
+
+            hitInfo.position = info.point;
+            hitInfo.normal = info.normal;
+            hitInfo.collisionID1 = (uint)info.contactID1;
+            hitInfo.collisionID2 = (uint)info.contactID2;
+            hitInfo.penetration = info.penetration;
+            hitInfo.timeOfImpact = 0;
+            return true;
+        }
+
+        hitInfo.body = null;
+        hitInfo.position = Vector3.zero;
+        hitInfo.normal = Vector3.zero;
+        hitInfo.collisionID1 = 0;
+        hitInfo.collisionID2 = 0;
+        hitInfo.penetration = 0;
+        hitInfo.timeOfImpact = 0;
+        return false;
+    }
+
     public bool ContinuousCollide(NewtonBody body1, NewtonBody body2, out NewtonCollideInfo hitInfo)
     {
-        //dMatrix matrix = Utils.ToMatrix(body.transform.position, body.transform.rotation);
-        //GCHandle mat_handle = GCHandle.Alloc(matrix);
-        //dVector vec = new dVector(transform.position.x, transform.position.y, transform.position.z);
-        //dQuaternion quat = new dQuaternion(transform.rotation.w, transform.rotation.x, transform.rotation.y, transform.rotation.z);
         dMatrix matrix1 = Utils.ToMatrix(body1.Position, body1.Rotation);
         dMatrix matrix2 = Utils.ToMatrix(body2.Position, body2.Rotation);
         dVector velocity1 = new dVector(body1.Velocity.x, body1.Velocity.y, body1.Velocity.z);
@@ -402,19 +430,9 @@ public class NewtonWorld : MonoBehaviour
             _InternalConvexCastInfo info = (_InternalConvexCastInfo)Marshal.PtrToStructure(hitInfoPtr, typeof(_InternalConvexCastInfo));
 
             hitInfo.body = body2;
-            /*if (info.hitBody != IntPtr.Zero)
-            {
-                hitInfo.body = (NewtonBody)GCHandle.FromIntPtr(info.hitBody).Target;
-            }
-            else
-            {
-                hitInfo.body = null;
-            }*/
 
-            //hitInfo.collider = null;
             hitInfo.position = info.point;
             hitInfo.normal = info.normal;
-            //hitInfo.collisionID = 0;
             hitInfo.collisionID1 = (uint)info.contactID1;
             hitInfo.collisionID2 = (uint)info.contactID2;
             hitInfo.penetration = info.penetration;
@@ -423,10 +441,8 @@ public class NewtonWorld : MonoBehaviour
         }
 
         hitInfo.body = null;
-        //hitInfo.collider = null;
         hitInfo.position = Vector3.zero;
         hitInfo.normal = Vector3.zero;
-        //hitInfo.collisionID = 0;
         hitInfo.collisionID1 = 0;
         hitInfo.collisionID2 = 0;
         hitInfo.penetration = 0;

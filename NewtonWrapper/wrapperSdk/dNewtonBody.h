@@ -65,8 +65,8 @@ class dNewtonBody: public dAlloc
 	void SetVelocity(dFloat x, dFloat y, dFloat z);
 	void SetOmega(dFloat x, dFloat y, dFloat z);
 
-	void GetMass(void* mass, void* inertia);
-	//void GetInvMass();
+	void* GetMass();
+	void* GetInvMass();
 	
 	float GetLinearDamping();
 	void SetLinearDamping(dFloat x);

@@ -169,22 +169,22 @@ public class NewtonBody : MonoBehaviour
         return m_body;
     }
 
-    public void GetMass(out Vector3 mass, out Matrix4x4 inertia)
+    public Vector4 GetMass()
     {
         IntPtr massPtr = IntPtr.Zero;
-        IntPtr inertiaPtr = IntPtr.Zero;
 
-        m_body.GetMass(massPtr, inertiaPtr);
+        massPtr = m_body.GetMass();
 
-        mass = (Vector3)Marshal.PtrToStructure(massPtr, typeof(Vector3));
-        
-        float[] floats = new float[9];
-        Marshal.Copy(inertiaPtr, floats, 0, 9);
+        return (Vector4)Marshal.PtrToStructure(massPtr, typeof(Vector4));
+    }
 
-        inertia = new Matrix4x4();
-        inertia.SetRow(0, new Vector4(floats[0], floats[1], floats[2], 0));
-        inertia.SetRow(0, new Vector4(floats[3], floats[4], floats[5], 0));
-        inertia.SetRow(0, new Vector4(floats[6], floats[7], floats[8], 0));
+    public Vector4 GetInvMass()
+    {
+        IntPtr massPtr = IntPtr.Zero;
+
+        massPtr = m_body.GetInvMass();
+
+        return (Vector4)Marshal.PtrToStructure(massPtr, typeof(Vector4));
     }
 
     public void CalculateBuoyancyForces(Vector4 plane, ref Vector3 force, ref Vector3 torque, float bodyDensity)

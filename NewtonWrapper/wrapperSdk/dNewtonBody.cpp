@@ -177,11 +177,16 @@ void* dNewtonBody::GetOmega()
 	return &m_omega;
 }
 
-void dNewtonBody::GetMass(void* mass, void* inertia)
+void* dNewtonBody::GetMass()
 {
-	NewtonBodyGetMass(m_body, &m_mass[0], &m_inertia[0][0], &m_inertia[1][0], &m_inertia[2][0]);
-	mass = &m_mass;
-	inertia = &m_inertia;
+	NewtonBodyGetMass(m_body, &m_mass[3], &m_mass[0], &m_mass[1], &m_mass[2]);
+	return &m_mass[0];
+}
+
+void* dNewtonBody::GetInvMass()
+{
+	NewtonBodyGetInvMass(m_body, &m_mass[3], &m_mass[0], &m_mass[1], &m_mass[2]);
+	return &m_mass[0];
 }
 
 void dNewtonBody::SetVelocity(dFloat x, dFloat y, dFloat z)

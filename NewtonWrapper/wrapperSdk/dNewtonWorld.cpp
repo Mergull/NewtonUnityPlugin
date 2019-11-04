@@ -184,6 +184,36 @@ void* dNewtonWorld::Collide(const dMatrix matrix, const dNewtonCollision* shape,
 	else return nullptr;
 }
 
+
+void* dNewtonWorld::Collide(const dMatrix matrix1, const dMatrix matrix2, dNewtonCollision* collision1, dNewtonCollision* collision2, int max_contacts)
+{
+	dVector contacts;
+	dVector normal;
+	dFloat penetration;
+	dLong contact_id1;
+	dLong contact_id2;
+
+	if (NewtonCollisionCollide(m_world, 1, collision1->m_shape, &matrix1[0][0], collision2->m_shape, &matrix2[0][0], &contacts[0], &normal[0], &penetration, &contact_id1, &contact_id2, 0))
+	{
+		collideInfo.point[0] = contacts[0];
+		collideInfo.point[1] = contacts[1];
+		collideInfo.point[2] = contacts[2];
+		collideInfo.normal[0] = normal[0];
+		collideInfo.normal[1] = normal[1];
+		collideInfo.normal[2] = normal[2];
+		collideInfo.penetration = penetration;
+		/*dNewtonBody* dBody = static_cast<dNewtonBody*>(NewtonBodyGetUserData(ret_info.m_hitBody));
+		collideInfo.managedBodyHandle = dBody->GetUserData();*/
+		collideInfo.managedBodyHandle = nullptr;
+		//collideInfo.body = ret_info.m_hitBody;
+		collideInfo.contact_id1 = contact_id1;
+		collideInfo.contact_id2 = contact_id2;
+		collideInfo.timeOfImpact = 0;
+		return &collideInfo;
+	}
+	return nullptr;
+}
+
 void* dNewtonWorld::ContinuousCollide(const dMatrix matrix1, const dMatrix matrix2, const dVector veloctiy1, const dVector velocity2, const dVector omega1, const dVector omega2, dNewtonCollision* collision1, dNewtonCollision* collision2, int max_contacts)
 {
 	dFloat timeOfImpact;
