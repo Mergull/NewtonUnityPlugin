@@ -107,12 +107,12 @@ int dNewtonWorld::GetUpdateStepsCount()
 	return m_stepsCount;
 }
 
-long long dNewtonWorld::GetMaterialKey(int materialID0, int materialID1) const
+dLong dNewtonWorld::GetMaterialKey(int materialID0, int materialID1) const
 {
 	if (materialID0 > materialID1) {
 		dSwap(materialID0, materialID1);
 	}
-	return (long long (materialID1) << 32) + long long(materialID0);
+	return ((dLong)(materialID1) << 32) + (dLong)(materialID0);
 }
 
 void dNewtonWorld::SetCallbacks(OnWorldUpdateCallback forceCallback, OnWorldBodyTransfromUpdateCallback tranformCallback)
@@ -527,7 +527,7 @@ void dNewtonWorld::OnContactCollision(const NewtonJoint* contactJoint, dFloat ti
 
 void dNewtonWorld::Update(dFloat timestepInSeconds)
 {
-	dLong timestepMicroSeconds = dClamp((dLong)(double(timestepInSeconds) * 1000000.0f), dLong(0), m_timeStepInMicroSeconds * m_maxInterations);
+	dLong timestepMicroSeconds = dClamp((dLong)(double(timestepInSeconds) * 1000000.0f), (dLong)0, m_timeStepInMicroSeconds * m_maxInterations);
 	m_realTimeInMicroSeconds += timestepMicroSeconds;
 	m_stepsCount = (int)(m_realTimeInMicroSeconds / m_timeStepInMicroSeconds);
 	if (m_stepsCount > m_maxInterations)m_stepsCount = m_maxInterations;

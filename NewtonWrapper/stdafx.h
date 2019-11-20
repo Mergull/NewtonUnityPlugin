@@ -9,10 +9,14 @@
 
 #define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
 // Windows Header Files:
-#include <new>
+#ifdef WIN32
+	#include <new>
+	#include <windows.h>
+#endif
+
+
 #include <stdio.h>
 #include <stdlib.h>
-#include <windows.h>
 #include <Newton.h>
 #include <dMathDefines.h>
 #include <dVector.h>
@@ -41,5 +45,4 @@
 
 #define RAD_TO_DEGREES	(180.0f / 3.141592f)
 #define DEGREES_TO_RAD	(3.141592f / 180.0f)
-
 

@@ -12,6 +12,7 @@
 *.userprefs
 
 # Build results
+[Bb]uild/
 [Dd]ebug/
 [Dd]ebugPublic/
 [Rr]elease/
@@ -239,6 +240,7 @@ FakesAssemblies/
 *.mdb
 *.pdb.meta
 *.dll.mdb.meta
+*so
 
 # Visual Studio LightSwitch build output
 **/*.HTMLClient/GeneratedArtifacts

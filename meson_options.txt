@@ -1,0 +1,1 @@
+option('NEWTON_DYNAMICS', type : 'string', value : '../newton-dynamics', description : 'Path to NewtonDyamics')
