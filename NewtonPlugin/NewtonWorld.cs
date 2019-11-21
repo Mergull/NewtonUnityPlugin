@@ -25,6 +25,7 @@ using System.Runtime.InteropServices;
 
 public delegate void OnWorldBodyTransfromUpdateCallback();
 public delegate void OnWorldUpdateCallback(float timestep);
+public delegate void OnMaterialInteractionCallback();
 
 [StructLayout(LayoutKind.Sequential)]
 internal struct _InternalRayHitInfo
@@ -169,6 +170,11 @@ public class NewtonWorld : MonoBehaviour
     //    }
     //}
 
+    void OnMaterialContact()
+    {
+        Debug.Log("Contact");
+    }
+
     private void InitScene()
     {
         /*Resources.LoadAll("Newton Materials", typeof(NewtonMaterialInteraction));
@@ -217,6 +223,17 @@ public class NewtonWorld : MonoBehaviour
         //    InitPhysicsJoints(rootObj);
         //}
     }
+
+    public void SetMaterialInteractionCallback(NewtonMaterialInteraction materialInteraction, UserOnMaterialInteractionCallback callback)
+    {
+        materialInteraction.m_callback = callback;
+        m_world.SetMaterialInteractionCallback(materialInteraction.m_material_0.GetInstanceID(), materialInteraction.m_material_1.GetInstanceID(), new OnMaterialInteractionCallback(materialInteraction.OnInteraction));
+    }
+    /*
+    public void SetMaterialInteractionCallback(NewtonMaterial material_0, NewtonMaterial material_1, UserOnMaterialInteractionCallback callback)
+    {
+        m_world.SetMaterialInteractionCallback(material_0.GetInstanceID(), material_1.GetInstanceID(), new OnMaterialInteractionCallback(OnMaterialContact));
+    }*/
 
     private void DestroyScene()
     {

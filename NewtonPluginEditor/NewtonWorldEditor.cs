@@ -86,7 +86,7 @@ public class NewtonWorldEditor : Editor
         EditorGUILayout.IntSlider(m_solverIterationsCountProp, 1, 10, new GUIContent("Solver iterations count"));
         EditorGUILayout.IntSlider(m_solverMaxIterationsCountProp, 1, 20, new GUIContent("Max solver iterations count"));
         EditorGUILayout.IntSlider(m_updateRateProp, 60, 1000, new GUIContent("Update rate"));
-        EditorGUILayout.IntSlider(m_subStepsProp, 1, 4, new GUIContent("Number of update sub steps"));
+        EditorGUILayout.IntSlider(m_subStepsProp, 1, 16, new GUIContent("Number of update sub steps"));
         EditorGUILayout.IntPopup(m_broadPhaseTypeProp, m_broadPhaseOptions, m_broadPhaseValues, new GUIContent("Broad phase type"));
         EditorGUILayout.PropertyField(m_gravityProp, new GUIContent("Gravity"));
 

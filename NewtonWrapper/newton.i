@@ -102,6 +102,7 @@
 %cs_callback(OnWorldUpdateCallback, OnWorldUpdateCallback) 
 %cs_callback(OnWorldBodyTransfromUpdateCallback, OnWorldBodyTransfromUpdateCallback)
 %cs_callback(OnContactCallback, OnContactCallback)
+%cs_callback(OnMaterialInteractionCallback, OnMaterialInteractionCallback)
 
 #pragma SWIG nowarn=401
 #pragma SWIG nowarn=516

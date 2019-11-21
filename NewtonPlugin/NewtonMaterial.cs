@@ -23,15 +23,21 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
+[StructLayout(LayoutKind.Sequential)]
+public struct MaterialProperties
+{
+    public float m_restitution;
+    public float m_staticFriction;
+    public float m_kineticFriction;
+    public bool m_collisionEnable;
+}
 
 [CreateAssetMenu(menuName = "Newton Material")]
 public class NewtonMaterial : ScriptableObject
 {
-    public float m_restitution = 0.3f;
-    public float m_staticFriction = 0.9f;
-    public float m_kineticFriction = 0.75f;
 }
 
+public delegate void UserOnMaterialInteractionCallback();
 
 [CreateAssetMenu(menuName = "Newton Material Interaction")]
 public class NewtonMaterialInteraction : ScriptableObject
@@ -42,6 +48,12 @@ public class NewtonMaterialInteraction : ScriptableObject
     public float m_staticFriction = 0.9f; 
     public float m_kineticFriction = 0.75f;
     public bool m_collisionEnabled = true;
+    public UserOnMaterialInteractionCallback m_callback;
+
+    internal void OnInteraction()
+    {
+        if (m_callback != null) m_callback();
+    }
 }
 
 

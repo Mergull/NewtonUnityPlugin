@@ -33,6 +33,7 @@ class dNewtonVehicleManager;
 
 typedef void(*OnWorldBodyTransfromUpdateCallback)();
 typedef void(*OnWorldUpdateCallback)(dFloat timestep);
+typedef void(*OnMaterialInteractionCallback)();
 
 class rayHitInfo
 {
@@ -88,6 +89,9 @@ class dNewtonWorld: public dAlloc
 		float m_staticFriction;
 		float m_kineticFriction;
 		bool m_collisionEnable;
+	private:
+		OnMaterialInteractionCallback m_callback;
+		friend class dNewtonWorld;
 	};
 
 	dNewtonWorld();
@@ -109,6 +113,7 @@ class dNewtonWorld: public dAlloc
 	long long GetMaterialKey(int materialID0, int materialID1) const;
 	void SetDefaultMaterial(float restitution, float staticFriction, float kineticFriction, bool collisionEnable);
 	void SetMaterialInteraction(int materialID0, int materialID1, float restitution, float staticFriction, float kineticFriction, bool collisionEnable);
+	void SetMaterialInteractionCallback(int materialID0, int materialID1, OnMaterialInteractionCallback callback);
 	void SetCallbacks(OnWorldUpdateCallback forceCallback, OnWorldBodyTransfromUpdateCallback tranformCallback);
 
 	dNewtonBody* GetFirstBody() const;
@@ -184,6 +189,7 @@ class dNewtonWorld: public dAlloc
 	friend class dNewtonCollision;
 	friend class dNewtonDynamicBody;
 	friend class dNewtonCollisionBox;
+	friend class dMaterialProperties;
 	friend class dNewtonKinematicBody;
 	friend class dNewtonCollisionMesh;
 	friend class dNewtonCollisionNull;

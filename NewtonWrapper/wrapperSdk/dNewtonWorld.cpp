@@ -320,6 +320,17 @@ void dNewtonWorld::SetMaterialInteraction(int materialID0, int materialID1, floa
 	material.m_collisionEnable = collisionEnable;
 }
 
+void dNewtonWorld::SetMaterialInteractionCallback(int materialID0, int materialID1, OnMaterialInteractionCallback callback)
+{
+	long long key = GetMaterialKey(materialID0, materialID1);
+	dTree<dMaterialProperties, long long>::dTreeNode* node = m_materialGraph.Find(key);
+	if (!node) {
+		node = m_materialGraph.Insert(key);
+	}
+	dMaterialProperties& material = node->GetInfo();
+	material.m_callback = callback;
+}
+
 void dNewtonWorld::SetFrameRate(dFloat frameRate)
 {
 	m_timeStep = 1.0f / frameRate;
@@ -329,7 +340,7 @@ void dNewtonWorld::SetFrameRate(dFloat frameRate)
 
 void dNewtonWorld::SetSubSteps(int subSteps)
 {
-	NewtonSetNumberOfSubsteps(m_world, dClamp(subSteps, 1, 4));
+	NewtonSetNumberOfSubsteps(m_world, dClamp(subSteps, 1, 16));
 }
 
 void dNewtonWorld::SetSolverIterations(int mode)
@@ -516,6 +527,7 @@ void dNewtonWorld::OnContactCollision(const NewtonJoint* contactJoint, dFloat ti
 		dMaterialProperties materialProp(*currentMaterialProp);
 		if (currentMaterialProp != lastMaterialProp) {
 			lastMaterialProp = currentMaterialProp;
+			if(materialProp.m_callback)materialProp.m_callback();
 			// do a material callback here is needed
 		}
 
