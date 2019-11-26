@@ -25,6 +25,7 @@ using System.Runtime.InteropServices;
 
 public delegate void OnWorldBodyTransfromUpdateCallback();
 public delegate void OnWorldUpdateCallback(float timestep);
+public delegate void OnMaterialInteractionCallback(IntPtr properties, IntPtr body0, IntPtr body1, IntPtr contact);
 
 [StructLayout(LayoutKind.Sequential)]
 internal struct _InternalRayHitInfo
@@ -169,6 +170,11 @@ public class NewtonWorld : MonoBehaviour
     //    }
     //}
 
+    void OnMaterialContact()
+    {
+        Debug.Log("Contact");
+    }
+
     private void InitScene()
     {
         /*Resources.LoadAll("Newton Materials", typeof(NewtonMaterialInteraction));
@@ -199,6 +205,8 @@ public class NewtonWorld : MonoBehaviour
                 // register all material interactions.
                 if (materialInteraction.m_material_0 && materialInteraction.m_material_1)
                 {
+                    materialInteraction.m_callback = null;
+
                     int id0 = materialInteraction.m_material_0.GetInstanceID();
                     int id1 = materialInteraction.m_material_1.GetInstanceID();
 
@@ -217,6 +225,18 @@ public class NewtonWorld : MonoBehaviour
         //    InitPhysicsJoints(rootObj);
         //}
     }
+
+    public void SetMaterialInteractionCallback(NewtonMaterialInteraction materialInteraction, UserOnMaterialInteractionCallback callback)
+    {
+        materialInteraction.m_callback = callback;
+        materialInteraction.m_onMaterial = new OnMaterialInteractionCallback(materialInteraction.OnInteraction);
+        m_world.SetMaterialInteractionCallback(materialInteraction.m_material_0.GetInstanceID(), materialInteraction.m_material_1.GetInstanceID(), materialInteraction.m_onMaterial);
+    }
+    /*
+    public void SetMaterialInteractionCallback(NewtonMaterial material_0, NewtonMaterial material_1, UserOnMaterialInteractionCallback callback)
+    {
+        m_world.SetMaterialInteractionCallback(material_0.GetInstanceID(), material_1.GetInstanceID(), new OnMaterialInteractionCallback(OnMaterialContact));
+    }*/
 
     private void DestroyScene()
     {
