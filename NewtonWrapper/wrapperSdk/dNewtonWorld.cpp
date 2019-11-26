@@ -162,23 +162,23 @@ void* dNewtonWorld::Collide(const dMatrix matrix, const dNewtonCollision* shape,
 	//NewtonWorldConvexCastReturnInfo info;
 	hitInfo.clearData();
 	hitInfo.layermask = layerMask;
-	NewtonWorldConvexCastReturnInfo ret_info = NewtonWorldConvexCastReturnInfo();
+	NewtonWorldConvexCastReturnInfo retInfo = NewtonWorldConvexCastReturnInfo();
 	//dMatrix matrixx = dMatrix(rotation,position);
 	//if (shape->m_shape == nullptr)return nullptr;
-	if (NewtonWorldCollide(m_world, &matrix[0][0], shape->m_shape, &hitInfo, &rayPreFilterCallback, &ret_info, 1, 0))
+	if (NewtonWorldCollide(m_world, &matrix[0][0], shape->m_shape, &hitInfo, &rayPreFilterCallback, &retInfo, 1, 0))
 	{
-		collideInfo.point[0] = ret_info.m_point[0];
-		collideInfo.point[1] = ret_info.m_point[1];
-		collideInfo.point[2] = ret_info.m_point[2];
-		collideInfo.normal[0] = ret_info.m_normal[0];
-		collideInfo.normal[1] = ret_info.m_normal[1];
-		collideInfo.normal[2] = ret_info.m_normal[2];
-		collideInfo.penetration = ret_info.m_penetration;
-		dNewtonBody* dBody = static_cast<dNewtonBody*>(NewtonBodyGetUserData(ret_info.m_hitBody));
+		collideInfo.point[0] = retInfo.m_point[0];
+		collideInfo.point[1] = retInfo.m_point[1];
+		collideInfo.point[2] = retInfo.m_point[2];
+		collideInfo.normal[0] = retInfo.m_normal[0];
+		collideInfo.normal[1] = retInfo.m_normal[1];
+		collideInfo.normal[2] = retInfo.m_normal[2];
+		collideInfo.penetration = retInfo.m_penetration;
+		dNewtonBody* dBody = static_cast<dNewtonBody*>(NewtonBodyGetUserData(retInfo.m_hitBody));
 		if (dBody == nullptr)collideInfo.managedBodyHandle;
 		else collideInfo.managedBodyHandle = dBody->GetUserData();
-		//collideInfo.body = ret_info.m_hitBody;
-		collideInfo.contact_id2 = ret_info.m_contactID;
+		//collideInfo.body = retInfo.m_hitBody;
+		collideInfo.contact_id2 = retInfo.m_contactID;
 		return &collideInfo;
 	}
 	else return nullptr;
@@ -202,10 +202,10 @@ void* dNewtonWorld::Collide(const dMatrix matrix1, const dMatrix matrix2, dNewto
 		collideInfo.normal[1] = normal[1];
 		collideInfo.normal[2] = normal[2];
 		collideInfo.penetration = penetration;
-		/*dNewtonBody* dBody = static_cast<dNewtonBody*>(NewtonBodyGetUserData(ret_info.m_hitBody));
+		/*dNewtonBody* dBody = static_cast<dNewtonBody*>(NewtonBodyGetUserData(collideInfo.m_hitBody));
 		collideInfo.managedBodyHandle = dBody->GetUserData();*/
 		collideInfo.managedBodyHandle = nullptr;
-		//collideInfo.body = ret_info.m_hitBody;
+		//collideInfo.body = collideInfo.m_hitBody;
 		collideInfo.contact_id1 = contact_id1;
 		collideInfo.contact_id2 = contact_id2;
 		collideInfo.timeOfImpact = 0;
@@ -232,10 +232,10 @@ void* dNewtonWorld::ContinuousCollide(const dMatrix matrix1, const dMatrix matri
 		collideInfo.normal[1] = normal[1];
 		collideInfo.normal[2] = normal[2];
 		collideInfo.penetration = penetration;
-		/*dNewtonBody* dBody = static_cast<dNewtonBody*>(NewtonBodyGetUserData(ret_info.m_hitBody));
+		/*dNewtonBody* dBody = static_cast<dNewtonBody*>(NewtonBodyGetUserData(collideInfo.m_hitBody));
 		collideInfo.managedBodyHandle = dBody->GetUserData();*/
 		collideInfo.managedBodyHandle = nullptr;
-		//collideInfo.body = ret_info.m_hitBody;
+		//collideInfo.body = collideInfo.m_hitBody;
 		collideInfo.contact_id1 = contact_id1;
 		collideInfo.contact_id2 = contact_id2;
 		collideInfo.timeOfImpact = timeOfImpact;
@@ -514,10 +514,18 @@ void dNewtonWorld::OnContactCollision(const NewtonJoint* contactJoint, dFloat ti
 		//if(dbody0 && dbody0->m_onContactCallback)dbody0->m_onContactCallback(normalImpact);
 		float normal[3];
 		float position[3];
-		NewtonMaterialGetContactPositionAndNormal(material, body0, position, normal);
-		if(dbody0->m_onContactCallback)dbody0->m_onContactCallback(dbody1->GetUserData(), normal, normalImpact, penetration);
-		NewtonMaterialGetContactPositionAndNormal(material, body1, position, normal);
-		if(dbody1->m_onContactCallback)dbody1->m_onContactCallback(dbody0->GetUserData(), normal, normalImpact, penetration);
+		
+		if (dbody0->m_onContactCallback)
+		{
+			NewtonMaterialGetContactPositionAndNormal(material, body0, position, normal);
+			dbody0->m_onContactCallback(dbody1->GetUserData(), normal, normalImpact, penetration);
+		}
+		
+		if (dbody1->m_onContactCallback)
+		{
+			NewtonMaterialGetContactPositionAndNormal(material, body1, position, normal);
+			dbody1->m_onContactCallback(dbody0->GetUserData(), normal, normalImpact, penetration);
+		}
 
 		NewtonCollision* const newtonCollision0 = (NewtonCollision*)NewtonContactGetCollision0(contact);
 		NewtonCollision* const newtonCollision1 = (NewtonCollision*)NewtonContactGetCollision1(contact);
@@ -525,10 +533,26 @@ void dNewtonWorld::OnContactCollision(const NewtonJoint* contactJoint, dFloat ti
 		dNewtonCollision* const collision1 = (dNewtonCollision*)NewtonCollisionGetUserData(newtonCollision1);
 		const dMaterialProperties* const currentMaterialProp = &world->FindMaterial(collision0->m_materialID, collision1->m_materialID);
 		dMaterialProperties materialProp(*currentMaterialProp);
-		if (currentMaterialProp != lastMaterialProp) {
+		/*if (currentMaterialProp != lastMaterialProp) {
 			lastMaterialProp = currentMaterialProp;
 			if(materialProp.m_callback)materialProp.m_callback();
 			// do a material callback here is needed
+		}*/
+		if (materialProp.m_callback)
+		{
+			NewtonMaterialGetContactPositionAndNormal(material, body0, position, normal);
+			NewtonUserContactPoint info;
+			info.m_point[0] = position[0];
+			info.m_point[1] = position[1];
+			info.m_point[2] = position[2];
+			info.m_normal[0] = normal[0];
+			info.m_normal[1] = normal[1];
+			info.m_normal[2] = normal[2];
+			info.m_penetration = penetration;
+			info.m_shapeId0 = (dLong)NewtonContactGetCollisionID0(contact);
+			info.m_shapeId1 = (dLong)NewtonContactGetCollisionID1(contact);
+			//info.m_hitBody = dbody0;
+			materialProp.m_callback(&materialProp, dbody0->GetUserData(), dbody1->GetUserData(), &info);
 		}
 
 		NewtonMaterialSetContactElasticity(material, materialProp.m_restitution);

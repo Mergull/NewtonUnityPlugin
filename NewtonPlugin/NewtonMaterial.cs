@@ -32,12 +32,25 @@ public struct MaterialProperties
     public bool m_collisionEnable;
 }
 
+[StructLayout(LayoutKind.Sequential)]
+public struct MaterialContactInfo
+{
+    public Vector3 m_point;
+    internal float m_pointW;
+    public Vector3 m_normal;
+    internal float m_normalW;
+    public long m_shapeId0;
+    public long m_shapeId1;
+    public float m_penetration;
+    //internal int m_unused;
+}
+
 [CreateAssetMenu(menuName = "Newton Material")]
 public class NewtonMaterial : ScriptableObject
 {
 }
 
-public delegate void UserOnMaterialInteractionCallback();
+public delegate void UserOnMaterialInteractionCallback(MaterialProperties properites, MaterialContactInfo contact, NewtonBody body0, NewtonBody body1);
 
 [CreateAssetMenu(menuName = "Newton Material Interaction")]
 public class NewtonMaterialInteraction : ScriptableObject
@@ -49,10 +62,20 @@ public class NewtonMaterialInteraction : ScriptableObject
     public float m_kineticFriction = 0.75f;
     public bool m_collisionEnabled = true;
     public UserOnMaterialInteractionCallback m_callback;
+    public OnMaterialInteractionCallback m_onMaterial;
 
-    internal void OnInteraction()
+    public void OnInteraction(IntPtr properties, IntPtr body0, IntPtr body1, IntPtr contact)
     {
-        if (m_callback != null) m_callback();
+        MaterialContactInfo contactInfo = (MaterialContactInfo)Marshal.PtrToStructure(contact, typeof(MaterialContactInfo));
+        MaterialProperties properties_ = (MaterialProperties)Marshal.PtrToStructure(contact, typeof(MaterialProperties));
+        //NewtonBody body0_ = (NewtonBody)Marshal.PtrToStructure(body0, typeof(NewtonBody));
+        //NewtonBody body1_ = (NewtonBody)Marshal.PtrToStructure(body1, typeof(NewtonBody));
+        NewtonBody body0_ = (NewtonBody)GCHandle.FromIntPtr(body0).Target;
+        NewtonBody body1_ = (NewtonBody)GCHandle.FromIntPtr(body1).Target;
+        //Debug.Log("On interaction");
+        if (m_callback != null) m_callback(properties_, contactInfo, body0_, body1_);
+
+        Marshal.StructureToPtr(properties_, properties, false);
     }
 }
 
