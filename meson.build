@@ -1,8 +1,51 @@
-project('NewtonUnityPlugin', 'cpp')
+project('NewtonUnityPlugin', ['cpp','cs'])
 
 NEWTON_DYNAMICS = get_option('NEWTON_DYNAMICS')
 
-src = [
+scs_assembly_ref = ['-r:../PluginBin/UnityEngine.dll']
+scs_editor_assembly_ref = ['-r:../PluginBin/UnityEngine.dll','-r:../PluginBin/UnityEditor.dll']
+
+plugin_src = [
+    'NewtonPlugin/NewtonBodyScript.cs',
+    'NewtonPlugin/NewtonBody.cs',
+    'NewtonPlugin/NewtonBodyCollision.cs',
+    'NewtonPlugin/NewtonBodyVehicle.cs',
+    'NewtonPlugin/NewtonBodyWheel.cs',
+    'NewtonPlugin/NewtonBoxCollider.cs',
+    'NewtonPlugin/NewtonCapsuleCollider.cs',
+    'NewtonPlugin/NewtonChamferedCylinderCollider.cs',
+    'NewtonPlugin/NewtonCollider.cs',
+    'NewtonPlugin/NewtonCompoundCollider.cs',
+    'NewtonPlugin/NewtonConeCollider.cs',
+    'NewtonPlugin/NewtonConvexHullCollider.cs',
+    'NewtonPlugin/NewtonCylinderCollider.cs',
+    'NewtonPlugin/NewtonGears.cs',
+    'NewtonPlugin/NewtonBallAndSocket.cs',
+    'NewtonPlugin/NewtonHeighfieldCollider.cs',
+    'NewtonPlugin/NewtonHinge.cs',
+    'NewtonPlugin/NewtonJoint.cs',
+    'NewtonPlugin/NewtonMaterial.cs',
+    'NewtonPlugin/NewtonNullCollider.cs',
+    'NewtonPlugin/NewtonSceneCollider.cs',
+    'NewtonPlugin/NewtonSlider.cs',
+    'NewtonPlugin/NewtonSlidingHinge.cs',
+    'NewtonPlugin/NewtonSphereCollider.cs',
+    'NewtonPlugin/NewtonTreeCollider.cs',
+    'NewtonPlugin/NewtonDoubleHinge.cs',
+    'NewtonPlugin/NewtonUtils.cs',
+    'NewtonPlugin/NewtonWorld.cs',
+    'NewtonPlugin/newton_wrap.cs',
+    'NewtonPlugin/Properties/AssemblyInfo.cs'
+]
+
+editor_plugin_src = [
+    'NewtonPluginEditor/MathHelpers.cs',
+    'NewtonPluginEditor/NewtonColliderEditor.cs',
+    'NewtonPluginEditor/NewtonWorldEditor.cs',
+    'NewtonPluginEditor/Properties/AssemblyInfo.cs',
+]
+
+wrapper_src = [
 	#'NewtonWrapper/CustomJoints.cpp',
 	'NewtonWrapper/dNewtonContact.cpp',
 	#'NewtonWrapper/NewtonWrapper.cpp',
@@ -23,8 +66,6 @@ src = [
 	'NewtonWrapper/wrapperSdk/dNewtonVehicleManager.cpp',
 	'NewtonWrapper/wrapperSdk/dNewtonWorld.cpp'
 ]
-
-
 
 largs = []
 
@@ -53,4 +94,10 @@ if r.returncode() != 0
 	error(r.stderr())
 endif
 
-shared_library('NewtonWrapper', src, include_directories : inc, link_args : largs)
+shared_library('NewtonWrapper', wrapper_src, include_directories : inc, link_args : largs)
+
+plugin = shared_library('NewtonPlugin', plugin_src, cs_args: scs_assembly_ref)
+
+scs_editor_assembly_ref += '-r:' + plugin.full_path()
+
+shared_library('NewtonPluginEditor', editor_plugin_src, cs_args: scs_editor_assembly_ref)

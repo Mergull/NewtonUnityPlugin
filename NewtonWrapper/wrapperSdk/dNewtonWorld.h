@@ -33,7 +33,7 @@ class dNewtonVehicleManager;
 
 typedef void(*OnWorldBodyTransfromUpdateCallback)();
 typedef void(*OnWorldUpdateCallback)(dFloat timestep);
-typedef void(*OnMaterialInteractionCallback)(void* properites, void* body0, void* body1, NewtonUserContactPoint* contact);
+typedef void(*OnMaterialInteractionCallback)(void* properites, void* body0, void* body1, NewtonUserContactPoint* contact, float normalImpact);
 
 class rayHitInfo
 {

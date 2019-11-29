@@ -25,7 +25,7 @@ using System.Runtime.InteropServices;
 
 public delegate void OnWorldBodyTransfromUpdateCallback();
 public delegate void OnWorldUpdateCallback(float timestep);
-public delegate void OnMaterialInteractionCallback(IntPtr properties, IntPtr body0, IntPtr body1, IntPtr contact);
+public delegate void OnMaterialInteractionCallback(IntPtr properties, IntPtr body0, IntPtr body1, IntPtr contact, float normalImpace);
 
 [StructLayout(LayoutKind.Sequential)]
 internal struct _InternalRayHitInfo

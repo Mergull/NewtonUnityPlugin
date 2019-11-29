@@ -50,7 +50,7 @@ public class NewtonMaterial : ScriptableObject
 {
 }
 
-public delegate void UserOnMaterialInteractionCallback(MaterialProperties properites, MaterialContactInfo contact, NewtonBody body0, NewtonBody body1);
+public delegate void UserOnMaterialInteractionCallback(ref MaterialProperties properites, MaterialContactInfo contact, float normalImpact, NewtonBody body0, NewtonBody body1);
 
 [CreateAssetMenu(menuName = "Newton Material Interaction")]
 public class NewtonMaterialInteraction : ScriptableObject
@@ -64,16 +64,16 @@ public class NewtonMaterialInteraction : ScriptableObject
     public UserOnMaterialInteractionCallback m_callback;
     public OnMaterialInteractionCallback m_onMaterial;
 
-    public void OnInteraction(IntPtr properties, IntPtr body0, IntPtr body1, IntPtr contact)
+    public void OnInteraction(IntPtr properties, IntPtr body0, IntPtr body1, IntPtr contact, float normalImpact)
     {
         MaterialContactInfo contactInfo = (MaterialContactInfo)Marshal.PtrToStructure(contact, typeof(MaterialContactInfo));
-        MaterialProperties properties_ = (MaterialProperties)Marshal.PtrToStructure(contact, typeof(MaterialProperties));
+        MaterialProperties properties_ = (MaterialProperties)Marshal.PtrToStructure(properties, typeof(MaterialProperties));
         //NewtonBody body0_ = (NewtonBody)Marshal.PtrToStructure(body0, typeof(NewtonBody));
         //NewtonBody body1_ = (NewtonBody)Marshal.PtrToStructure(body1, typeof(NewtonBody));
         NewtonBody body0_ = (NewtonBody)GCHandle.FromIntPtr(body0).Target;
         NewtonBody body1_ = (NewtonBody)GCHandle.FromIntPtr(body1).Target;
         //Debug.Log("On interaction");
-        if (m_callback != null) m_callback(properties_, contactInfo, body0_, body1_);
+        if (m_callback != null) m_callback(ref properties_, contactInfo, normalImpact, body0_, body1_);
 
         Marshal.StructureToPtr(properties_, properties, false);
     }

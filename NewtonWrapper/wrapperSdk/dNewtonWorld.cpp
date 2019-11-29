@@ -552,7 +552,7 @@ void dNewtonWorld::OnContactCollision(const NewtonJoint* contactJoint, dFloat ti
 			info.m_shapeId0 = (dLong)NewtonContactGetCollisionID0(contact);
 			info.m_shapeId1 = (dLong)NewtonContactGetCollisionID1(contact);
 			//info.m_hitBody = dbody0;
-			materialProp.m_callback(&materialProp, dbody0->GetUserData(), dbody1->GetUserData(), &info);
+			materialProp.m_callback(&materialProp, dbody0->GetUserData(), dbody1->GetUserData(), &info, normalImpact);
 		}
 
 		NewtonMaterialSetContactElasticity(material, materialProp.m_restitution);
