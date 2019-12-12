@@ -34,6 +34,7 @@ class dNewtonVehicleManager;
 typedef void(*OnWorldBodyTransfromUpdateCallback)();
 typedef void(*OnWorldUpdateCallback)(dFloat timestep);
 typedef void(*OnMaterialInteractionCallback)(void* properites, void* body0, void* body1, NewtonUserContactPoint* contact, float normalImpact);
+typedef int(*OnMaterialAABBOverlapCallback)(void* body0, void* body1);
 
 class rayHitInfo
 {
@@ -91,6 +92,7 @@ class dNewtonWorld: public dAlloc
 		bool m_collisionEnable;
 	private:
 		OnMaterialInteractionCallback m_callback;
+		OnMaterialAABBOverlapCallback m_aabb_overlap_callback;
 		friend class dNewtonWorld;
 	};
 
@@ -114,6 +116,7 @@ class dNewtonWorld: public dAlloc
 	void SetDefaultMaterial(float restitution, float staticFriction, float kineticFriction, bool collisionEnable);
 	void SetMaterialInteraction(int materialID0, int materialID1, float restitution, float staticFriction, float kineticFriction, bool collisionEnable);
 	void SetMaterialInteractionCallback(int materialID0, int materialID1, OnMaterialInteractionCallback callback);
+	void SetMaterialAABBOverlapCallback(int materialID0, int materialID1, OnMaterialAABBOverlapCallback callback);
 	void SetCallbacks(OnWorldUpdateCallback forceCallback, OnWorldBodyTransfromUpdateCallback tranformCallback);
 
 	dNewtonBody* GetFirstBody() const;

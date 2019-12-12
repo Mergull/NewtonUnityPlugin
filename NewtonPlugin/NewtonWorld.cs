@@ -26,6 +26,7 @@ using System.Runtime.InteropServices;
 public delegate void OnWorldBodyTransfromUpdateCallback();
 public delegate void OnWorldUpdateCallback(float timestep);
 public delegate void OnMaterialInteractionCallback(IntPtr properties, IntPtr body0, IntPtr body1, IntPtr contact, float normalImpace);
+public delegate int OnMaterialAABBOverlapCallback(IntPtr body0, IntPtr body1);
 
 [StructLayout(LayoutKind.Sequential)]
 internal struct _InternalRayHitInfo
@@ -206,6 +207,7 @@ public class NewtonWorld : MonoBehaviour
                 if (materialInteraction.m_material_0 && materialInteraction.m_material_1)
                 {
                     materialInteraction.m_callback = null;
+                    materialInteraction.m_aabb_overlap_callback = null;
 
                     int id0 = materialInteraction.m_material_0.GetInstanceID();
                     int id1 = materialInteraction.m_material_1.GetInstanceID();
@@ -231,6 +233,13 @@ public class NewtonWorld : MonoBehaviour
         materialInteraction.m_callback = callback;
         materialInteraction.m_onMaterial = new OnMaterialInteractionCallback(materialInteraction.OnInteraction);
         m_world.SetMaterialInteractionCallback(materialInteraction.m_material_0.GetInstanceID(), materialInteraction.m_material_1.GetInstanceID(), materialInteraction.m_onMaterial);
+    }
+
+    public void SetMaterialAABBOverlapCallback(NewtonMaterialInteraction materialInteraction, UserOnMaterialAABBOverlapCallback callback)
+    {
+        materialInteraction.m_aabb_overlap_callback = callback;
+        materialInteraction.m_onMaterialAABBOverlap = new OnMaterialAABBOverlapCallback(materialInteraction.OnAABBOverlap);
+        m_world.SetMaterialAABBOverlapCallback(materialInteraction.m_material_0.GetInstanceID(), materialInteraction.m_material_1.GetInstanceID(), materialInteraction.m_onMaterialAABBOverlap);
     }
     /*
     public void SetMaterialInteractionCallback(NewtonMaterial material_0, NewtonMaterial material_1, UserOnMaterialInteractionCallback callback)

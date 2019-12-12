@@ -25,6 +25,10 @@ using System.Runtime.InteropServices;
 
 public delegate void OnContactCallback(IntPtr otherBody, IntPtr normal, float normalImpact, float penetration);
 
+public interface NewtonUserData
+{
+}
+
 [DisallowMultipleComponent]
 [AddComponentMenu("Newton Physics/Rigid Body")]
 public class NewtonBody : MonoBehaviour
@@ -146,6 +150,7 @@ public class NewtonBody : MonoBehaviour
         if (m_body != null)
         {
             var handle = GCHandle.FromIntPtr(m_body.GetUserData());
+            m_body.SetUserData(IntPtr.Zero);
             handle.Free();
 
             m_body.Dispose();
@@ -424,6 +429,11 @@ public class NewtonBody : MonoBehaviour
         }
     }
 
+   /* void SetMaterial(NewtonMaterial material)
+    {
+        m_collision.SetMaterial(material);
+    }*/
+
     [Header("rigid body data")]
     public float m_mass = 0.0f;
     public Vector3 m_centerOfMass = new Vector3 (0.0f, 0.0f, 0.0f);
@@ -440,6 +450,7 @@ public class NewtonBody : MonoBehaviour
     public NewtonWorld m_world;
     public Vector3 m_forceAcc { get; set; }
     public Vector3 m_torqueAcc { get; set; }
+    public NewtonUserData m_userData { get; set; }
     public float m_linearDamping = 0.1f;
     public Vector3 m_angularDamping = new Vector3(0.1f, 0.1f, 0.1f);
 

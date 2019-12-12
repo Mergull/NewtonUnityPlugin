@@ -285,7 +285,7 @@ void dNewtonBody::CalculateBuoyancyForces(const void* plane, void* force, void* 
 			// Get the body density form the collision material.
 			NewtonCollisionMaterial collisionMaterial;
 			NewtonCollisionGetMaterial(collision, &collisionMaterial);
-			const dFloat solidDentityFactor = collisionMaterial.m_userParam[0].m_float;
+			const dFloat solidDentityFactor = collisionMaterial.m_userParam[0];// .m_float;
 
 			// calculate the ratio of volumes an use it calculate a density equivalent
 			dFloat shapeVolume = NewtonConvexCollisionCalculateVolume(collision);

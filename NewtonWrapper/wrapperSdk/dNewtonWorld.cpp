@@ -318,6 +318,8 @@ void dNewtonWorld::SetMaterialInteraction(int materialID0, int materialID1, floa
 	material.m_staticFriction = staticFriction;
 	material.m_kineticFriction = kineticFriction;
 	material.m_collisionEnable = collisionEnable;
+	material.m_callback = nullptr;
+	material.m_aabb_overlap_callback = nullptr;
 }
 
 void dNewtonWorld::SetMaterialInteractionCallback(int materialID0, int materialID1, OnMaterialInteractionCallback callback)
@@ -329,6 +331,17 @@ void dNewtonWorld::SetMaterialInteractionCallback(int materialID0, int materialI
 	}
 	dMaterialProperties& material = node->GetInfo();
 	material.m_callback = callback;
+}
+
+void dNewtonWorld::SetMaterialAABBOverlapCallback(int materialID0, int materialID1, OnMaterialAABBOverlapCallback callback)
+{
+	long long key = GetMaterialKey(materialID0, materialID1);
+	dTree<dMaterialProperties, long long>::dTreeNode* node = m_materialGraph.Find(key);
+	if (!node) {
+		node = m_materialGraph.Insert(key);
+	}
+	dMaterialProperties& material = node->GetInfo();
+	material.m_aabb_overlap_callback = callback;
 }
 
 void dNewtonWorld::SetFrameRate(dFloat frameRate)
@@ -489,7 +502,18 @@ int dNewtonWorld::OnBodiesAABBOverlap(const NewtonJoint* const contactJoint, dFl
 	dNewtonCollision* const collision0 = (dNewtonCollision*)NewtonCollisionGetUserData(newtonCollision0);
 	dNewtonCollision* const collision1 = (dNewtonCollision*)NewtonCollisionGetUserData(newtonCollision1);
 	const dMaterialProperties materialProp = world->FindMaterial(collision0->m_materialID, collision1->m_materialID);
-	return materialProp.m_collisionEnable ? 1 : 0;
+	
+	if (materialProp.m_aabb_overlap_callback)
+	{
+		dNewtonBody* dbody0 = (dNewtonBody*)NewtonBodyGetUserData(bodyPtr0);
+		dNewtonBody* dbody1 = (dNewtonBody*)NewtonBodyGetUserData(bodyPtr1);
+		if (!dbody0 || !dbody1)return 0;
+		void* userData0 = dbody0->GetUserData();
+		void* userData1 = dbody1->GetUserData();
+		if (!userData0 || !userData1)return 0;
+		return materialProp.m_aabb_overlap_callback(userData0, userData1);
+	}
+	else return materialProp.m_collisionEnable ? 1 : 0;
 	//return 1;
 }
 

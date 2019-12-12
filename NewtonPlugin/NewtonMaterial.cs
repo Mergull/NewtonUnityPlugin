@@ -51,6 +51,7 @@ public class NewtonMaterial : ScriptableObject
 }
 
 public delegate void UserOnMaterialInteractionCallback(ref MaterialProperties properites, MaterialContactInfo contact, float normalImpact, NewtonBody body0, NewtonBody body1);
+public delegate bool UserOnMaterialAABBOverlapCallback(NewtonBody body0, NewtonBody body1);
 
 [CreateAssetMenu(menuName = "Newton Material Interaction")]
 public class NewtonMaterialInteraction : ScriptableObject
@@ -61,8 +62,10 @@ public class NewtonMaterialInteraction : ScriptableObject
     public float m_staticFriction = 0.9f; 
     public float m_kineticFriction = 0.75f;
     public bool m_collisionEnabled = true;
-    public UserOnMaterialInteractionCallback m_callback;
-    public OnMaterialInteractionCallback m_onMaterial;
+    public UserOnMaterialInteractionCallback m_callback = null;
+    public UserOnMaterialAABBOverlapCallback m_aabb_overlap_callback = null;
+    public OnMaterialInteractionCallback m_onMaterial = null;
+    public OnMaterialAABBOverlapCallback m_onMaterialAABBOverlap = null;
 
     public void OnInteraction(IntPtr properties, IntPtr body0, IntPtr body1, IntPtr contact, float normalImpact)
     {
@@ -77,6 +80,16 @@ public class NewtonMaterialInteraction : ScriptableObject
 
         Marshal.StructureToPtr(properties_, properties, false);
     }
+
+    public int OnAABBOverlap(IntPtr body0, IntPtr body1)
+    {
+        NewtonBody body0_ = (NewtonBody)GCHandle.FromIntPtr(body0).Target;
+        NewtonBody body1_ = (NewtonBody)GCHandle.FromIntPtr(body1).Target;
+
+        if (m_aabb_overlap_callback != null) return m_aabb_overlap_callback(body0_, body1_) ? 1 : 0;
+        else return 1;
+    }
+
 }
 
 
